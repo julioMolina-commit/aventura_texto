@@ -1,0 +1,1553 @@
+# [Elaborar un programa en python que simule un viaje de exloración. El programa debe ser como una aventura gráfica en la que el usuario podrá ir tomando decisiones a lo largo de la ejecución del mismo. Se utilizaran los conocimientos aprendidos hasta la fecha para la confección del proyecto. El programa deberá estar libre de errores (glitch/bug) que impidan su correcta ejecución. Optimizar en la medida de lo posible el código de nuestro programa.]
+
+# Importamos los módulos que serán necesarios; os para limpiar la pantalla regularmente y random para seleccionar aleatoriamente eventos
+
+import os
+
+import random
+
+# CONFIGURACIÓN INICIAL
+
+# Presentación del juego
+
+print("\t \t \t \t   Player's Bizzare Adventure".upper())
+print("\t \t \t \t   Jugar en Pantalla Completa")
+
+print("""                                                                                                 
+                                               ▒▓▓███████████▓                                      
+                                           ▒▓▓████████████████████▒                                 
+                                        ▒▒▒▓█████████████████████████▓                              
+                                     ░▓▒▒▓▓▓▓▓██████████████████████████                            
+                                    ▓▓▒▒▒▒▓▓▓▓████████████████████████████                          
+                                  ████▒▒▒▓▓▓▓▓██████████████████████████████                        
+                                 ████▓▒▒▓▓▓▓▓████████████████████████████████                       
+░░                              █████▓▒▒▒▓▓█▒▓████████████████████████████████                      
+░                              ▒█████▒▒▒▒▒▒▒▒▓▓▓▓█████████████████████████████▒                     
+                               ██████░▓▒▒▓▓▓▒▓▓█████▓██████████████████████████                     
+ ░                             ▓████▓░ ▒▓▓█▓▓██████▓███████████████████████████                     
+░░                             ▓█▓░▒▓░░ ░▓█▓▓███▓▓███████████████▓█████████████                     
+▒░░▒                          ▓▓▓▓▒█▒░░░░░▓▒░▒▒▓▓▓▓████████████████▓▓▓▒▓▓▓████▒                     
+▓▒░░░░   ░░   ░░             ██▓▓▓██▒██░░▒▓░▒▓▓█▒▓▓▓██████████████▓▓▒▒▓▓██████                      
+▒▒░░░░░░▒▒░   ░░ ░           ░ ░░░▒▓██▓▒░░▓▒▒▓█▒▒▓▓███▓▒▒░░▒▒▓████████▓▓▓▓▓██                     ░▒
+░░░░░░░░░     ░░░░░          ░ █▒ ░░▒▓█▒░▒█░▒█▒▒▒▓█▓▓▒▒██████ ░▒▓████▒▒░░▒▒█░                   ░▒▓░
+░░░░░ ░       ░▒░░░            ░    ░░▒█▒ ▓▒▓░▒▒▒▒▒▒▒▓▒▒▓▓▒▓▒█▓▒▓█████▓▓▒▒▓                   ░▒▓▓░ 
+░▒▒░░░▒░░░░░░░░░░░             █       ░░█░▒▒ ▒░▒▒▒▒▒     ██▒▒░▓▒███████▒░                  ▒▒▓▓▓▒  
+░▒▒░▒▒▒▒░░░░▒▒▒▒▒                        ░░▒  ░▒▓░░           ▒██████▒▓▒                 ▒▒▓▓▓▓▓▓   
+ ▒▒▒▓▒▒▒▒▒▒░▒▒░░                          ▒▒▓▒░░             ▒█████▓▓▒                ▓▒▓▒▓▓▓▒▓▓▒   
+░▒▒▒░░░░░▒▒▓▒▒░▒                ▒         ░▒█▒▓▒░           ░█████▓▒               ▓▓▓▒▓▓▓▓▓▒▓▓▒░   
+  ░░░░  ░░▒▓▓█░░░               ██ ░      ░▒▓██▓▒█░       ░██████▓░               ▒▒▓▓▓▓▓▓▓▒▒▒▓░    
+      ░ ░▒▒▒█▓░░░               █░░░      ▒▒▓▒███▒▓▒▒░▒█▓▒▒█████▒█              ▓▓▓▒▓▒▓▒▓▓▒▒▓▒▓▓    
+        ▒░▒▒▓▒▒░░▒               ▒░█  ░░ ▒ ▒  ██▒▓█▒▒▓█▓█▓▒▓▓▒░▓▒              ▒▒▓▒▒▓▒▓▓▓▒▒▒▒▓▒█    
+        ▒▒▒░▓▒░░░░░░   ░░░          ░░█░ ▒ ░█░██▓░▒██▒▓░░░  ▒▓███░           ▒▓▓▒▓▒▓▓▒▓▓▒▒▒▒▒▓░     
+     █▓██▓▒░▒▒▒▒░▒▒▒▒▒     ░░▒        ▒▒▓▒▓▒███████▒▓▓▒▒░░▒▒▓▓███▓▒          ▒▒▓▒▓▒▓▒▒▒▒▒▒▒▒▒▒▓     
+     ▒▓█▒░░  ▓░░░▒▒▒░  ░░ ▓  ░         ██░▓▓▓███████▓▓██▓▓█████▓▓▒▓▒        ▒▓▒▒▒▒▒▓▓▒▒▒▒▒▒▒▓▓      
+      ▒▒▒▓    ▒░░░░░▒ ░░█▒██░▓         ▒░▒▓█████▓▓███▓████▓▓▒██▓▒▓▒▒▓░     ▒▒▒▓▒▓▒▒▓▒▒▒▒▒▒▒▒▒       
+                  ▒ ░▒ ▒▒▓█░░           ░█▓     ███░██████░█▓█▓▓▓▒▒▒▒▒▒    ░▒▒▓▒▒▒▒▒▒▒▒▒▒▒▒▓        
+                   ░ ▒▓ ░▒█           ▒███░█▓▓▓████▓███▓█░▒███▓▓▓▒▒▒▒▒▒▒  ░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓      ░  
+                    █░░▒▓█          ████░▓░  ░▒▒▓████░ ▓█▒▒▓█▓▓▓▓▓▒▒▒▒▒▒  ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒  ▒ ▒▒▒▒▒▒▒
+                   ▓███▓████     ▓████   ▓▒░▒▓█████░▒█▓░█▒▒██▓▓▓▓▓▓▒▒▒▒▒░ ░▒░▒▒▒▒▒▒▒▒▒▒▒░▒▒▒▒▒▒▒▒▒▒▒
+                █▓▓▓▒░  ░░    █▒███░       ░░░▒▓▓▒░░▒██▒█▓▒███▒▓▓▓▓▓▒▒▒▒▒ ▒▒░▒▒▒▒▒▒▒▒ ░▒▒▒▒▒▒▒▒▒▒▓▓▒
+             ░█░░░░░░ ░░▒█░  ▒▓▓▒                ▓ ░░▒▒▒█▒▒████ ▒▓▓▓█▒░▒▒ ░▒▒▒░▒▒▒▒ ░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓
+            █░▓██▓██▓███▒▓█                      ░▒░░▒▓▓█▓▒██████ ▒▓▓▓▓▒▒ ░░▒▒▒▒▒ ░░░▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓
+            ░░░       ░░███                      ▒▓▒ ░░▒▓▒▒████████▒▒▓▓▓▒░░▒▒▒░  ░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓
+           █░▒▒░     ▓░ ░▓█                   ██▒▓ ▓░▒▒█▒░▒█▓██▓██████▓█▓▒ ▓▒  ░▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▒ 
+           █░▓░ ▓▓████▓ ░▓█                 ██▓ ░▓    ░▒░░▓█▓███▒▒▓████████▒▒▓▓▒▓▒▓░▒▒▓ ░░░         
+          █ ░▓▒▒░ ░▒▒▓▓██▒██        ▒▒▒▒░▒▒▒░   ▓█     ░ ▒██▓████▒░░▒▓██████▒▓░                     
+         ░██▓▒▒▒░▒░░░▓█░▓█▓█    ░█▓▒▒▒▒▓▒░     ▓█▓▒  ░░░░▓███▒█████▒░░▒▒▓▓████▒▓▓▓▒░░ ░             
+        ▒█▓▓▒▒▒▓▒▒░░░░▒▒▓███   █▓██▒▒░  ██▒░░  ░▓ ▒▓    ▒██▓██▓███▓██▓▒▒▒███████▓█████░░░░░░░░      
+        ▒░▒▓▓█▒▒▓▓▓░░▒▒▒▓███  █▒█▒░░░░   ░██▒▒░░  ▒▓▓  ░█▓█▒██▓████████████▓▒▓█████▒████░░░░░░░▒▒   
+         ░░░▓███████░░▒▒▓▓██ ▒▓█░░ ░░      ▒▒▒▒▒▒▒███▒ ▒████████████▓▒▒   ░▒░▒▓██████▓███▓▒░▒░░░▒▒▒ 
+           ░▒▓███████▓▒▒▒▓██ ██▒          ░▓▓▒░▒▒▒███░░▒▓▓▓▓▒▒▓▒▒▒▒▒▒▒▓▒▒▒  ░░▒▒▓▓█████████▓▓▒░░░▒▒▓
+             ░░▒███████░▒▒▓▓ ▓░         ░██▓▒█▓░░▒▓█▒ ░▒▓▓▓▒▒▒▓▓███████▓█▒    ░░░▒▒▓████████▓▓▒▓▒▒▒▒
+              ░ ░▒▓██████▓▓▓░▒ ░      ▒▓██▓▒▒▓▒▒▓▓███░▒▓██████████████████▓     ░░▒▒▒▒██████▓▓▓▒▓▒▒░
+                  ░▒▓██████ ░▒░      ▒███▓▒▓█▒▒▒▓███▒▒▓█████████████████████▓▒░   ░ ▒▒▒▓█████▓▓█▒▓▓▒
+                    ░▒▓▓███  ▒░      ███▓▒▓░░░░▒▒▓▓▓░░▒▓▓█████▓▓███████████▓░▒░░     ▒░▒▓▓███▓█▓█▒▓█
+                      ░▒▓██  ▒▓░░    ██▓▒▒░░░░░▒▒▒▓▓   ░░▒▒▒▓▓████████████▓▒░         ▒░▒▓▓███░▒▒██▓
+                   ▒░ ░░▓▓█ ░█▓░░  ░░▓█▓▒▒░▒▒▒▒▒▓▓▓▒░▒▓▓█▓█▓▓▓▓███████████▒     ▒▓▓░   ▓░░▓███     ░
+                    ░ ░░▒██ ██▒▒░  ░  ▓▒▒░▒░░▒▒▒▓▓█▒ ░░░▓▓▓▓▓▓▓▓▓██████▓▓░▒░   ▒▓▓▒▓  ▒▒▓▓▒▓██      
+                    ░░░▓▒▓███▒▒▒░░ ░  ▓▒░▒▒░░▒▒▒▒▒▒  ░▒▓▓▓▓▓▓▓▓███▓██▓▒▒▓▓▒▒░  ▒░▓▓▒▒  ██▓█▓███     
+""")
+
+input("\n Pulsa enter para empezar...")
+os.system("cls")
+
+# Selección de nombres
+
+print("\n Te despiertas solo en una habitación extraña, parece una habitación normal y corriente, pero algo no termina de encajar. \n (Pulsa enter)")
+input()
+print("Solo hay una mesa, una silla y un cuaderno vacío junto a un bolígrafo. 'Leer en caso de perder la memoria' dice la portada - escrito rápido y tembloroso - dentro dice: \n (Pulsa enter)")
+input()
+
+os.system("cls")
+
+name_player = input("'Si no lo recuerdas tu nombre es...' \n (Cómo se llama tu personaje) \n \n")
+
+print(f"\n \n 'No te preocupes, {name_player}, no es la primera vez que esto pasa, pero tampoco puedes relajarte. Antes tampoco estabamos seguros de lo que estaba pasando, así que necesitas empezar a investigar y reunir pruebas.' \n 'No olvides tener cuidado con la policia, te están buscando; ten más cuidado aún con la chica, sigue ahí fuera.' \n \n 'No eres como los demás, a diferencia del resto podemos...")
+
+# Selección de dificultad
+
+print("\n \n 'Ahora, recuerda cuántas pistas tienes que reunir... \n A. 3, B. 5, C. 7 \n (Esto marca lo larga que es la partida)")
+
+# Permite elegir una opción de dificultad con su asociada cantidad de localizaciones
+
+while True:
+    difficulty = input("\n Elige: ").upper()
+
+    if difficulty == "A" or "B" or "C":
+        match difficulty:
+            case "A":
+                print("\n 3, debería ser fácil'")
+                difficulty = 3
+                input()
+                break
+                
+                break
+            case "B":
+                print("\n 5, debería ser difícil'")
+                difficulty = 5
+                input()
+                break
+                
+            case "C":
+                print("\n 7, debería ser muy difícil'")
+                difficulty = 7
+                input()
+                break
+
+print("\n El coche y las llaves deberían estar fuera, tienes una lista de los sitios que deberías investigar, también puedes volver aquí para descansar si te hace falta. Suerte, te va a hacer falta.")
+
+input()
+
+# Creamos una lista de localizaciones y añadimos una nueva por cada punto en dificultad
+# Se selecciona aleatoriamente entre las cuatro combinaciones de negativo y positivo en coordinadas asignando valores aleatoriamente y comprobamos que no este repetida
+
+locations = []
+locationsCopy = []
+
+for i in range(difficulty):
+    while True:
+        match random.randint(0, 3):
+            case 0:
+                locations.append([random.randint(2, 5), random.randint(2, 5)])
+            case 1:
+                locations.append([random.randint(-5, -2), random.randint(-5, -2)])
+            case 2:
+                locations.append([random.randint(2, 5), random.randint(-5, -2)])
+            case 3:
+                locations.append([random.randint(-5, -2), random.randint(2, 5)])
+
+        if locations[len(locations) - 1] not in locations:
+            i -= 1
+            locations.remove(len(locations) - 1)
+        else:
+            break
+
+locationsCopy = locations
+
+# DECLARACIÓN DE VARIABLES
+
+# Marcar coordinadas iniciales en cero
+
+coordinates_player = [0, 0]
+
+# Declaración de recursos y contadores iniciales
+
+health = 7
+sanity = 7
+food = 15
+fuel = 15
+money = 4
+
+lila_tracker = 0
+
+hour_count = 0
+day_count = 0
+
+has_weapon = False
+healing_device = False
+body_armor = False
+mind_shielder = False
+infinity_engine = False
+
+has_met_dog = False
+
+# FUNCIONES DEL JUEGO
+
+# Se utiliza esto cuando termine la partida
+
+def on_game_lose():
+    global health
+    global sanity
+    global fuel
+    global money
+    global lila_tracker
+
+    os.system("cls")
+    print("\t \t \t Has perdido".upper())
+    print("-"*80)
+    print("\n \n \n \n Al final todo termina así. \n \n")
+
+    if (lila_tracker >= 10):
+        print("Ella ha dado conmigo, no tengo más opción, tendré que acompañarla de vuelta y confiar en que no sea tan terrible como imagino, aunque este seguro de que sí.")
+
+        if (has_met_dog == True):
+            print("\n \n Al menos se que el perro está a salvo.")
+    else:
+        
+        if (health <= 0):
+            print("En cierta forma terminar muriendo, aunque no sea rápido sino por una lenta acumulación de heridas, es mejor que volver a sus garras. Así al menos puedo descansar.")
+
+            if (healing_device == True):
+                print("\n \n Quizás mi dispositivo de vida eterna todavía es capaz de traerme de vuelta, aunque no se qué seré cuando suceda.")
+
+        elif (sanity <= 0):
+            print("La verdad es que todo esto es demasiado, los eventos paranormales, la chica, el misterio, debería haberme rendido desde el principio. Con lo poco que tengo voy a irme a vivir a una isla tropical y pasarlo bien en vez de intentar decubrir lo que pasa aquí.")
+
+            if (healing_device == True):
+                print("\n \n Mi dispositivo de vida eterna me será útil, con él puedo sencillamente estar de vacaciones para siempre.")
+
+        elif (fuel <= 0) & (money <= 0):
+            print("Sin dinero ni combustible no tengo nada que hacer para seguir adelante, estático soy una presa fácil y poco a poco los fenómenos paranormales o la chica terminarán por acabar conmigo. Al menos espero que sea rápido.")
+
+        if (has_met_dog == True):
+            print("\n \n Espero que el perro este bien, no fue demasiado útil, pero al menos era amable.")
+
+        if (infinity_engine == True):
+            print("\n \n Es una pena que ahora que va a terminar todo nadie pueda vigilar la máquina de energía infinita que me encontré, podría haber salvado a la humanidad o algo, quizás explota sin que la vigile alguien. Sería un final extraño.")
+
+    input()
+    exit(1)
+
+def on_game_won():
+    global health
+    global sanity
+    global fuel
+    global money
+    global lila_tracker
+
+    os.system("cls")
+    print("\t \t \t Has ganado".upper())
+    print("-"*80)
+
+    print("\n \n \n \n Al final todo encaja. \n \n")
+    print("La chica es un parásito conceptual, desde que la gente puede pensar en ella nos ha dado caza para obligarnos a prestarle atención y así seguir existiendo, no soy el primero en escapar que ha conseguido con medicamento, efectos paranormales o una lobotomía casera olvidarla lo suficiente como para actúar. Pero sigue siendo extremadamente poderosa. Ahora que lo se puedo centrar mis esfuerzos en no ceder del todo y construir mi vida de ahora en adelante para...")
+
+    print("\n \n A. Cobrar venganza \n B. Destruirla para siempre \n C. Huir lo más lejos posible")
+
+    while True:
+                answer = input("Elijo... ")
+                if answer == "A" or "B" or "C":
+                    match answer:
+                        case "A":
+                            print("\n \n Quizás destruirla no es posible, no es algo que 'exista' como tal, pero si es susceptible a cómo se la percibe puedo alterar eso para condenarla a un infierno del que no pueda escapar.")
+
+                            if (infinity_engine == True):
+                                print("\n \n Y con la máquina de energía infinita puedo hacer casi cualquier cosa, acabar con ella será solo el principio.")
+                            if (healing_device == True):
+                                print("\n \n Con mi dispositivo de curación soy eterno, tengo todo el tiempo del mundo para ganar.")
+
+                            break
+                        case "B":
+                            print("\n \n No soy el único que ha sufrido por ella, no seré el último, pero por cruel que sea si puedo evitarle esto a más gente solo tengo una opción. Para borrarla por completo tengo que acabar con todos los que saben que existe, todo registro.")
+
+                            if (has_met_dog == True):
+                                print("\n \n Incluido ese perro, por chill que fuera.")
+                            if (infinity_engine == True):
+                                print("\n \n Con la máquina de energía infinita puedo viajar a donde haga falta.")
+                            if (healing_device == True):
+                                print("\n \n Con mi dispositivo de curación nadie podrá detenerme.")
+                            if (has_weapon == True):
+                                print("\n \n Y ya estoy armado.")
+
+                            break
+                        case "C":
+                            print("Seguro que irme a la playa después de otro lavado de cerebro no está tan mal, si juego bien mis cartas puedo asegurarme de no volver a toparme con ella o con lo sobrenatural jamás.")
+
+                            if (has_met_dog == True):
+                                print("\n \n Hasta podría llevarme al perro, seguro que le parece bien.")
+                            if (infinity_engine == True):
+                                print("\n \n Y con la máquina de energía infinita podemos hacer dinero fácilmente, ni tendremos que trabajar.")
+                            if (healing_device == True):
+                                print("\n \n Con mi dispositivo de curación podemos no hacer nada hasta el fin del mundo, incluso sin tener que comer o dormir.")
+
+                            break
+                else:
+                    print("No es el momento para dudar con mis respuestas.")
+
+    input()
+    exit(1)
+
+# Movimiento del jugador, actualiza recursos y permite moverse en cuatro direcciones
+
+def on_player_movement():
+    global hour_count
+    global day_count
+    global coordinates_player
+
+    hour_count += 1
+    
+    if hour_count == 24:
+        hour_count = 0
+        day_count += 1
+
+    os.system("cls")
+
+    # Actualizar recursos
+
+    global food
+    global health
+    global fuel
+    global sanity
+    global money
+
+    print("-" * 80, "\n Mi estado actual: ")
+
+    if (healing_device == True) & (health <= 8):
+        print("\n \n El dispositivo de curación hace que mis heridas se cierren solas \n \n")
+        health += 2
+
+    if (mind_shielder == True) & (sanity <=8):
+        print("\n \n El dispositivo mental hace que mi mente se mantenga enfocada \n \n")
+        sanity += 2
+
+    if (health <= 0) & (body_armor == True):
+        print("\n \n Pese a que me han herido de muerte, mi armadura ha conseguido salvarme, pero se ha roto \n \n")
+        health = 1
+        body_armor == False
+
+    if (infinity_engine == True):
+        fuel += 1
+
+    if (len(locationsCopy)) == 0:
+        # Aquí se indica que ganas / activa cuando ganas TODO
+        print("You WIN !!!!")
+        on_game_won()
+
+    if (food >= 0) & (health <= 9):
+        print("\n He podido comer algo y me encuentro mejor")
+        food -= 1
+        health += 1
+
+    else:
+        print("\n No he podido comer nada y me encuentro fatal")
+        health -= 1
+
+    if (fuel >= 1):
+
+        fuel -= 1
+    elif (fuel <= 0) & (money >= 1):
+        print("\n Me he visto obligado a comprar algo de combustible antes de seguir")
+
+        fuel += 2
+        money -= 1
+    elif (fuel <= 0) & (money <= 0):
+        print("\n No tengo suficiente combustible para seguir ni dinero para comprar más, es cuestión de tiempo para que ella me encuentre \n \n")
+        on_game_lose()
+
+    if (health <= 0):
+        print("\n Me han herido de muerte, es cuestión de tiempo que termine muriendo \n \n")
+        on_game_lose()
+    if (sanity <= 0):
+        print("\n No puedo seguir, todo esto es demasiado, tengo que escapar de aquí. Otra persona tendrá que resolver todo esto \n \n")
+        on_game_lose()
+
+    # Mensaje nuevo
+
+    print("\n \n", "-" * 80, f"\n Soy {name_player} y llevo investigando {day_count} día(s) y {hour_count} hora(s). \n Mi posición actual es de {coordinates_player} y tengo todavía que visitar sitios en {locations}.")
+
+    print(f"\n Mi salud actual es de: {health} \n Mi cordura actual es de: {sanity} \n Mi comida actual es de: {food} \n Mi combustible actual es de: {fuel} \n Mi dinero actual es: {money}")
+
+    print("\n Debo seleccionar la dirección en la que moverme: \n Norte 'N' \n Sur   'S' \n Este  'E' \n Oeste 'O' \n")
+
+    while True:
+        direction = input("Introduce la dirección: \n").upper()
+
+        if direction == "N" or direction == "S" or direction == "E" or direction == "O":
+            match direction:
+                case "N":
+                    coordinates_player[0] += 1
+                    return coordinates_player
+                case "S":
+                    coordinates_player[0] -= 1
+                    return coordinates_player
+                case "E":
+                    coordinates_player[1] += 1
+                    return coordinates_player
+                case "O":
+                    coordinates_player[1] -= 1
+                    return coordinates_player
+            break
+        else:
+            print("Debo elegir una dirección válida")
+
+# Sistema de comercio / decisiones para eventos aleatorios
+
+def on_player_choise():
+    os.system("cls")
+
+    global food
+    global health
+    global fuel
+    global sanity
+    global money
+    global lila_tracker
+    global has_weapon
+    global healing_device
+    global body_armor
+    global infinity_engine
+    global mind_shielder
+
+    match (random.randint(0, 5)):
+        case 0:
+            # Encuentro con la criatura sin nombre
+            print("""
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▒▒▒▒▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓██▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓█▓▓▓▓▓▓▓▓▓█▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓█▓▓███▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓█▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓█████▓██▓██████▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓█▓▓▓▓█▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓██▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒█▓█▓▓▓▓█▓▒▒▓▓▓█▓▓▓█▓▒▒▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▓▓▓▓▓█▓▒▒▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓█▓▒▓█▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓██▓▓▓▓▓▓▓▓██▓▓▓███▓▓▓▓▓▒▒▓▓██▓▓▓█▓▒▒▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▒▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓███▓██▓▓▓████▓▓█▓█████████▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓█▓▓▒▒▓▓▓▓▓▓▓▓▒▒▒▒▒▒▓▓▓▓▓█████▓█▓▓▓▓▓▓▓█████▓█▓▓▓▓▒▓▒▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▒▒▒▒▒▓▓▓▓▓▓▓▒▒▓▓▓▓▓███▓▓▓▒▒▓▓▓▓▓▓█▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▓▓▓▓▓▓▒▒▒▒▒▒▓▓▓▓▒▓▒▒▒▒▒▒▒▒▒▒▒▒
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓█▓▓▓▓▒▓▓▓▓▓▓▓▓▓▓▓▓█▓▓▓▓▓▓▓▓▓▓▓▒▓▒▒▒▒▒▓▓▒▒▓▓█▓▓▓▒▓▓▒▒▒▒▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▒▒▒▒▒▒▒▓▓▓▓▓▓▓█▓▓▓▓▓▓▒▒▓▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▒▒▒▒▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▓▓▒▓█▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓█▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒█▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓█▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▓▒▒▒▒▒▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▓▓▒▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▓▓█▓▒▓▓▓▓▓▓▓▓▓▓▓▓▒
+▓▒▓▒▓▒▓▒▓▒▓▒▓▒▓▒▓▓▓▓▓▓▒▓▒▓▒▓▒▓▒▓▒▓▒▓▒▓▓▓▒▓▓▒▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▒▓▓▓▓▒▓▒▓▒▓▒▓▒▓▒▓▒▓▒▓▒▓▒▓▒▓▓▒▓█▓▓▓▒▓▒▓▒▓▒▓▒▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███▓▓▒▒▒▒▒▒▒▒▒▓▓▓▓▓▒▒▒▓▓▓▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▓▒▓▒▒▒▒▒▓▓▓▓▓▓▓▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██▓▒▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███▓▓▒▒▒▓▓▓▒▒▒▓▓▓▓▓▓▓▓▓▓▒▒▓▓▓▓▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█▓▓▒▒▒▓▓▓▓▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▓▓▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█▓▓█▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▓▓▓▓▓█▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███▓▓▓▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▓▓▓▓▓▓▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▓▓▓█▒▓█▓▓▓▓▓▒▓▓▓▓▓▓▓▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▓▓▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▓▒▒▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▓▓▓▓▓▓▓▓▓▓▓▒▒▓▒▒▓▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▓▓▓▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▓▓▓▒▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▓▓▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▓▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▓▓▓▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▓▒█▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▓▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▓▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓""")
+            print("\n \n Aparece una figura alta en un callejón, llama tu nombre - arrastra la voz casi confundiéndose con el viento - y te das cuenta de que no hay gente o coches a cientos de metros a la redonda. \n (Pulsa enter) \n")
+            input()
+            print(f"'{name_player}, ella sabe dónde estás, dame el pago correcto y te diré cómo evitarla.'")
+
+            print("Puedo: \n A. Le haré hablar a golpes \n B. Pago en sangre \n C. Pago con dinero \n D. Pago con información de otro \n E. Preguntarle por su nombre \n F. Preguntarle de qué conoce a la chica \n G. Voy a ignorar a la criatura")
+
+            while True:
+                answer = input("Elijo... ").upper()
+                if answer == "A" or "B" or "C" or "D" or "E":
+                    match answer:
+                        case "A":
+                            if health >= 3:
+                                health -= 3
+                                print("'Muy bien, es justo lo que quería, me llevaré lo que has derramado ahora y prometo usarlo bien. \n Ahora atiende, la chica ve todo desde lejos, pero cuando entra solo puede ver desde un par de ojos. Evita las multitudes durante unas horas y estarás bien'")
+                                break
+                            else:
+                                print("No soy lo bastante fuerte ahora")
+                        case "B":
+                            if health >= 3:
+                                health -= 2
+                                print("'Muy bien, es justo lo que quería, me llevaré lo que has derramado ahora y prometo usarlo bien. \n Ahora atiende, la chica ve todo desde lejos, pero cuando entra solo puede ver desde un par de ojos. Evita las multitudes durante unas horas y estarás bien'")
+                                lila_tracker -= 3
+                                input()
+                                break
+                            else:
+                                print("No tengo suficientes cultistas")
+                        case "C":
+                            if money >= 3:
+                                money -= 3
+                                print("'No me sirve de nada tu dinero, pero si tiras tanto estarás desesperado. \n Muy bien, quedate en esta calle una hora, aquí no te encontrará. Evita sitios con mucha gente, es más fácil que se mueva a través de otras personas'")
+                                lila_tracker -= 1
+                                input()
+                                break
+                            else:
+                                print("No tengo bastante dinero como para impresionarlo")
+                        case "D":
+                            if has_met_dog == True:
+                                print("'Pagas mis secretos con los de otro, fantástico, visitaré a ese perro pronto. Voy a aprender tanto. \n Ahora atiende, la chica ve todo desde lejos, pero cuando entra solo puede ver desde un par de ojos. Evita las multitudes durante unas horas y estarás bien'")
+                                lila_tracker -=3
+                                input()
+                                break
+                            else:
+                                print("Quizás funcionaría si tuviese algún contacto que pasarle")
+                        case "E":
+                            print("'No tengo ninguno'")
+                        case "F":
+                            print("'No la conozco, pero estamos aquí por lo mismo' \n A. ¿Por qué? \n B. No estás siendo muy claro")
+
+                            sub_answer = input("Elijo... ").upper()
+
+                            if sub_answer == "A" or "B":
+                                 match sub_answer:
+                                    case "A":
+                                        print("'Por ti'")
+                                        input()
+                                    case "B":
+                                        print("No me permiten serlo")
+                                        input()
+                        case "G":
+                            print("'¿Vas a evitarme? Quizás es que no tienes nada que ofrecerme, vale, espero que te atrape pronto, cobarde'")
+                            lila_tracker += 1
+                            input()
+                            break
+        case 1:
+            print("""
+████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
+████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
+████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
+████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
+████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
+████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
+████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
+█████████████████████████████████████████████████████████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███████████████████████████████
+███████████████████████████████████████████████████████▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▒▓▓▓▓▓▓▒▒▒▒▓▓▓▓▓▓▓██████████████████████████
+█████████████████████████████████████████████████████▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▒▒▒▒▒▒▒▒▒▓▓▒▒▓▓▒▓▓▒▓████████████████████████
+███████████████████████████████████████████████████▓▓▒▒██████▓▒▒▒▒███▓▓▒▒▒▒▒▓█▓▒▒▒▒▒▒▒▒▒▒▒▓▒▒▒▒▒▒▒▒▒▓███████████████████████
+██████████████████████████████████████████████████▓▓▓█▓███████▒▒▒█████████▒▓▓▓▒▒▓███████▓▒▓▓███████▒▒▓██████████████████████
+████████████████████████████████████████████████▓▓▒██▓████████▒▒▒█████████▓▓▓▒▒██▓▒▒▒▒▒▒▓▒▓▓███████▓▒▓▓█████████████████████
+███████████████████████████████████████████████▓▓▒▓██▒▓▒▒▓▒▓█▓▒▒███▓▒▒▒▒▒▓█▓▒▒███▓▓▓▓▓▓▓▓▒▓▓████████▒▓▓█████████████████████
+██████████████████████████████████████████▓▓▓▒▒▓▒▒▓▒▓▓▒▒▒▓▒▒▒▒▒▓▓▓▓▒▓▒▒▓▓▓▓▒▓▓▓▓▓▓▒▒▒▒▒▒▒▒▓▒▓▓▓▒▒▒▒▒▒▓▓▒████████████████████
+████████████████████████████████████████▓▓▓▒▒▒▒▒▒▒▒▒▒▓▓▓▓▒▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▓▓▓▒▒▒▒▓▒▓▓▓▓▓▓▒▒▒▓▓▓▒▓▓▒▒▒▒▓▓▓▓▓▓█████████████████
+███████████████████████▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▒▒▒▓▓▓▓▓▓▓▓▓▒▓▒▒▓▓▓▓▓▓▓▓▒▒▒▓▓▓▓▓▓▒▓▓▒▒▒▓▓▓▒▓▓▓▒▒▒▒▓▒▓▒▓▓▓▓███████████
+██████████████▓▒▒▒▓▓▓▓▓▓▓█▓▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▓▓▒▒▓▓▓▓▓▓▓▓▓▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▓▓▒▒▒▓▓▓▓▓██████████
+███████████▓▓▒▒▓▓▓▓▓▓██▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▓▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▒▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▓▓▓▓▓▓▓▒▒▒▓▓▓▓▓▓▓▓▓▓▓▒▒▒▓▓▓▓▓▓██████████
+██████████▓▓▓▓▒▓▓▓▒▒▓█▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▒▒▓▓▓▒▓▒▒▓▓▒▓▒▒▒▒▒▒▒▒▓▓▒▒▒▒▒▒▒▒▒▓▓▓▓▓▒▓▒▓▓▓▓▓▓▓▓▒▓▓▒▒▒▓▓▓▓▓▓██████████
+███████████▓█▓▒▓▓▓▓▒▒▓█▓▓▓▓▓▓▓▓▓▓▓▓▓▒▓▒▒▒▒▓▒▒▓▓▒▓▓▒▓▓▓▓▒▒▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▓▒▒▒▒▒▒▓▓▒▒██████████
+███████████▓▓▒▒▒▒▒▒▒▒▒▒▒▒▓▒▒▓▓▓▓▓▓▓▓▓▒▓▓▒▒▒▒▒▓▓▓▒▓▒▒▓▓▒▒▒▒▒▒▒▒▓▓▓▒▒▒▓▒▓▒▓▒▓▓▓▓▓▓▓▒▒▓▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▓█████████
+█████████████▓▓▒▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▓▓██▓▓▒▒▓▓▓▓▓▒▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▒▒▒▒▒▒▒▒▒▒▒▒▓▓▒▓▓▓▒▒▒▓▒▓▓▒▒▒▒▓▒▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓█████████
+███████████▓▓▓▓▓▓▓▓▓▒▓▓▓▓▓▓▒▒▒▒▓▓▓▓▓▓▒▒▓▒▒▒▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▒▒▓▓▓▒▒▒▓▓▓▒▒▒▒▒▓▓▒▒▒▒▒▒▒▒▒▓▓▒▒▒▒▒▒▒▒▓▓▒▒██▒▒████████████
+███████████▒▒▓▓▓▓▓▓▓▓▒▓▒▓▓▓▓▓▓▓▒▓▓▓▓▒▒▓▒▒▒▒▒▒▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓▒▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▒▒▒▒▒▒▒▓▒▓▓▓▒▓▒██████████████
+██████████▓▓▓▓▓▓▓▓▓▓▓▓▓▒▓▓▒▒▓▓▓▒▒▓▒▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▒▓▓▓▒████████████████
+██████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▓▓▒▓▒▓▓▒▓█▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▒▓████████████████
+████████▓▓▓▓▓▓▓▓▒▓▓▓▓▓▓▒▓▒▓▓▓▓▒▒▒▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓█▓▒▒▒▒▓▒▓▒▒█████████████████
+██████████▓▓▒▓▓▓▓██▓▓▒▓▓▒▒▓▒▓▒▒▒▒▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▒▒▒▒▒▒▒▒▒▓▓▓▒▒▒▒▒█████████▓▒▒▒▒▒▒▒██████████████████
+██████████▓▓▒█▒▓▓▓▓█▓▓█▓▓█▓▓▓▒▒▒▒▒▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▒▒▒▓▒▒▒▒▒▒▒▒▓▒▓▓▒▒▒▒▒▓▒▓▒▒▓▓███████████████████████████████████████
+█████████████████▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▓▓▓▒▒▒▒▒▒▒▓▓█▒▒▒▒▒▒▓▓██▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓██████████████████████████████████████████████
+██████████████████████▒▒▓▓▓▓▓██▓▓▓▓▓▓▓██████▓▓▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▒▒▒▓▒▒▒▒█████████████████████████████████████████████████████
+████████████████████████▒▓▓▒▓▓██▓▓██████▓▓▓▓▓▒▒▒▒▓▓▓▓▓▓▒▒▓▓▓▓▓▓▒▒▒██████████████████████████████████████████████████████████
+█████████████████████████▓▓▓▒▒▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▒▒▒▒▒▓▓▓▓▓▒▒▒██████████████████████████████████████████████████████████
+██████████████████████████████████▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▒▓█▓▓▓▒▒▒▓██████████████████████████████████████████████████████████
+███████████████████████████████████████████▒▒▒▒▒▒▓▓▓▓▓▓██▓▓▓▓▓▒▒▒███████████████████████████████████████████████████████████
+████████████████████████████████████████████▒▒▒▒▒▒▓▓▒▒▓▓▓▓▓▓▒▒▒▒████████████████████████████████████████████████████████████
+█████████████████████████████████████████████▒▒▒▒▒▒▒▓▓▓▓▓▓▒▒▒▒▓█████████████████████████████████████████████████████████████
+███████████████████████████████████████████████▒▒▒▒▒▒▒▒▒▒▒▒▒▓███████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████▒▒▒▒▒▒▓███████████████████████████████████████████████████████████████████
+████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
+████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
+████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
+████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
+████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████""")
+            print("Mientras avanzas con el coche notas algo extraño, las ruedas se atascan en el asfalto como si fuese barro o nieve blanda, el aire que entra por la ventilación es pesado y espeso, aceitoso. \n El proceso es demasiado lento para anticiparse, por algún motivo - sea miedo o una fuerza sobrenatural - no puedes moverte, no puedes quitar las manos del volante, apenas respirar. \n (Pulsa enter) \n")
+            print("Hay algo bajando por la carretera en línea recta hacia ti, cuesta distinguir qué es, pero no parece bueno y ningún otro conductor parece darse cuenta.")
+
+            print("Puedo: \n A. Piso a fondo con todas mis fuerzas \n B. Doy un volantazo al lado \n C. Aguanto en el sitio hasta que pase")
+
+            while True:
+                answer = input("Elijo... ").upper()
+                if answer == "A" or "B" or "C":
+                    match answer:
+                        case "A":
+                            if fuel >= 4:
+                                fuel -= 4
+                                sanity -= 1
+                                print("Pisando a fondo empiezas a quemar rueda hasta que consigues romper el conjuro y arrollar la aparición siguiendo tu camino, las manos te tiemblan")
+                                input()
+                                break
+                            else:
+                                print("No tengo suficiente combustible como para salir de aquí")
+                        case "B":
+                            if health >= 4:
+                                health -= 4
+                                sanity -= 1
+                                print("Consigues apartarte, tienes un choque lateral que le hace un feo al coche y te cuesta una contusión, pero consigues escapar")
+                                input()
+                                break
+                            else:
+                                print("No puedo arriesgarme a tener un accidente tan herido como estoy ahora")
+                        case "C":
+                            if sanity >= 3:
+                                sanity -= 3
+                                print("Consigues aguantar en el sitio hasta que el peligro pasa, la aparición sobrepasa el coche y el conjuro desaparece, pero la imagen conforme se acercaba se ha quedado grabada a fuego")
+                                input()
+                                break
+                            else:
+                                print("No puedo reunir suficiente sangre fría como para intentar quedarme")
+        case 2:
+
+            match random.randint(0, 4):
+                case 0:
+                    print("""
+░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓███████████████████████████████████████████████████████████████████████▓▓▓█▓███
+░░▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓█████████████████████████████████████████████████▓▓▓▓▓▓██████████████▓▓█▓▓▓▓
+░░▒▒▒░░░░░░▒░▒▒▒▒▒▒▒▒▓████████████████████████████████████████████████████████████████████████▓▓▓▓▓▒
+░▒░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓███████████████████████████████████████████████████████████████████████▓▓▓▓
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓█████████████████████████████████████████████████████████████████████▓▓▓█
+▒▒▒▒▒▓▓▓█▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓████████████████████████████████████████████████████████████████▓▓▓▓▓▓▓▓▓▓
+▒▒▒▒▓▓██▓▓▓▓▓▓▓▒▒▒█████████████████████████████████████████████████████████████████████████▓▓██▓▓▓▓▓
+▒▓▓▓███████▓▓▓▓▓▓██████████████████████████████████████████████████████████████████████████████████▓
+▓▓███████████▓██████████████████████████████████▒▒▒▒████████████████████████████████████████████████
+▒▓██████████████████████████████████████████████░░░░░███████████████████████████████████████████████
+░▒▒▒░▓████████████████████████████████████████░░░░░░░████████████████████████████████████████▓▓▒▒█▒█
+▒▒▒▒░░░░░███████████░░░█████████████████████▒░▒░░░░░░▒░██████████████████████░▒▒▒███████████▓▓▓▒▒▒▒▒
+▒▒▒▒▒▒▒▒░░░░▒▒████▒░░░░░███████████████████▓▒░░░░░░░░░░░▒█████████████████▓██░░░░▓█████████████▓▓▒▒▒
+▒▒▒▓▒▓▓▒▒▒▒▒▓█████░░░░░░░███░░░░░█████░░▒█░░░░██░░░░░░░░░▒░░██████████████▒░░░░░░░▒██████████████▓▓▒
+▓▓█▓██████████░█▓░░░░░░░░▓▒▒░▒░░▒▓█████░░▒░░▒░░░░░░░░░█░▒▒▒░███▓░▒▒████▒▒▒░░░░░░░░░░█░▓██████████▓▓▓
+██████████████▒░░▒▒▓░░░░░▒▒▓▓▒░▒▒▒▓░████████▓░░░███▒▒░████▓▒█▒▓▒░░░▒█▓▒▒▒░▒▒█░░▒▒█▓░▒░████████████▓▓
+█████████████████████▒░▒░██▒█▓▓▒█▒░████████▓▓░▒▓█████░░█████▓▓▒▒▒▒▒█▓▒▓▓▓▓▒▒░░▒███████████████████▓▓
+█████████████████░█▒▒▓░▒░███▓███▒▒█████████▒▒░▒░▒██▒█░▒▓█████▓▒▒███▓██▓████░░░░▒░█░███████████████▓▒
+████████████████▒░██░█░░░░█▒▒▒▒█▒▒████████░░░░▓▒▒▒▓▒█░░░░████▒▒▒█▒▒▒▒█▒▒▒▓░░░░█░░█░░▒██████████████▓
+████████████████▓░░▒░█░▒░░██▒▒▒█▒░▓▓██████░░░░█░░░░░█░▒░░███▓▒▒▒▒▒▒▒░▒▒▒▒░░░░░▒░▒░░░░████▓▓▓▓▓▓▓▓▓▓▓
+████████████████░▓░░░█░░░▒███▒▒▒░░░███████░░░░█░░░░░█░░░░█████▓▒▒▒▒▒██▒▒░░░▒▓░▓░░░░░░███▓▓▓▓▓▓▓▒▒▒▒▒
+█████████████████░░░▓░░░▒████▒▒▒██████████░░░░▓░░░▒░░░░░░███████▒▒▒██████▒░░░░░▓░░░░░█████▓▓▓▓▒▒▒▒▒▒
+▓▓█████████████▓▒▒░░▒░▓▓▓▓▓▓▒▒▓▓▓▓▓██████▒░░░▒▓░░░░░▓░▓░░████████████████████░░█░░██████▓▒▒▒▒▒▒▒▒▒▒▒
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓█████░░░▓░▒▒░░░░▒░░░░███████████████▒▒▒░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▒▒▒▒▒▓████▓░▒▒░░░░░░░░░░░░░▒██████▓▓▓▒▒▒▒▒▒▒▓█▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▒▒▒▒▒▒▒▓▓████▓▒▒▒▒▒░░░░░░░▒▓▓██████▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓█▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+░▒▒░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓█▒▒▒▒▒▒▒▒▒▒▒▒
+░░░░▒░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▒▒▒▒▒▒▒▒
+░░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▒▒▒▒
+░░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+░░░░▒▒▒▒▒▒▒▒▒▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░▒░░▒░░░░░
+░░░▒░▒▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░░░░░░░░
+░░░░░░▒▒▒░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░▒▒▒▒▒▒▒▒▒▒▒▒░▒░▒░░░▒▒░░░░░░░░░░░░
+░░▒░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░▒▒▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░▒░░▒▒▒▒▒▒▒░▒░░░░░░░░░▒░▒░░░░░░░░
+░░░░░░░░░░▒▒░▒▒▒▒▒▒▒▒▒▒▒▒▒░▒▒░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░▒░░░░░▒▒▒░░░░░░░░░░░░░░░░░░░░░░░
+                    """)
+                    print("Te detiene un grupo de motoristas rodeando el coche, hacen rugir las motos y sonríen mirándote de arriba abajo. Entonces sacan algunos maletines y se preparan para negociar.")
+                    input()
+
+                    print("Puedo: \n A. Pedirles algo de gasolina \n B. Cambiar 4 de comida por 4 de combustible \n C. Comprar un chaleco antibalas por 3 de dinero \n D. Dar las gracias sin comprar nada")
+
+                    while True:
+                        answer = input("Elijo... ").upper()
+                        if answer == "A" or "B" or "C":
+                            match answer:
+                                case "A":
+                                    if (sanity >= 1):
+                                        sanity -= 1
+                                        fuel += 4
+
+                                        print("Resulta humillante, pero pidiendo por favor y suplicando los motoristas se compadecen y te dan algo de combustible.")
+                                        input()
+                                        break
+                                    else:
+                                        print("No podría soportar la humillación ahora mismo.")
+                                case "B":
+                                    if (food >= 4):
+                                        food -= 4
+                                        fuel += 4
+
+                                        print("Parecen hambrientos y no se resisten a cambiar un tanque de combustible por algo de comer.")
+                                        input()
+                                        break
+                                    else:
+                                        print("No tengo suficiente comida como para darle a todos.")
+                                    break
+                                case "C":
+                                    if (money >= 3) & (body_armor == False):
+                                        money -= 3
+                                        body_armor == True
+
+                                        print("'Este es bueno, toma, este chaleco me ha salvado a mi de como siete tiros y nunca te das cuenta hasta que pasa ¿Sabes?.'")
+                                        input()
+                                        break
+                                    else:
+                                        print("No tengo suficiente dinero como para pagarlo o no quieren verme con dos armaduras.")
+                                case "D":
+                                    print("Les doy las gracias y les veo marcharse en las motos dispersándose a lo lejos")
+                                    input()
+
+                case 1:
+                    print("""
+███████████████████████████████████████████████████████▓▓█▒░█▒████████████████████████████████▒██▓▓▓
+██████████████████████████████████████████████████████▓███▓▒███████████████████████████████████▒██▓█
+██████████████████████████████████████████████████████▓████▒███▓█████▓██▓██████████████████▓███▒█░  
+████████▓▓▒░█▒░████████████████████████████████████████████▓███▓▓███▓████████████████████████ ▓█████
+███████████▓████████▓▓█████████████████████████████████████▓█████████▓██▓██████████████▓▒██▓▒▒█▓████
+████▓▓█████▒██▓▒▒░░▒░▓████████████████████████████████▓████░▓████████████████████████████████▒▒▓████
+▓▓█████████▒███▓███▓▓▓▓██▓▓████████████████████████████████░▓████████▓████████████████▓▒▒█▒▒▓█▒ ██▒█
+▓██████▓███▒██████▓▓▓▓▓▓▓▓▓▓██████████████████████████▓▓▒██▒▓████████▓█████████████████░░▒▒▒▓▓░ ██▒█
+▓███▓▓▓▓▓██▓██████▓█▓▓▓▓▓▓▓▓▓█████████████████████████▓▓▓▓▓▒▓████▓███▓▒█████████████▒░▓▓█░░░░▒▒▒▒▒▒░
+▒▒▓▓█▓▓▓▓▓▓▓█████▓▓▓▓▓▓▒▓█▓▓▓████████▓▓█████████▓▒▒▒▓▓▓▓▓▒▒▓▓███▓▓███▒▒███████████████▒ ░▓░▒░ █░░▒█ 
+▓▒▓▒███▓▓▓▓▓▓▓▓██▓▓▓▓▓▓▓▓██▒▓▓▓▓██▓█▓█▓████████▒▒▒▒▒▒▒▓▒▒░░▒░▒▒██████▓█████████▒░█▓█▓░░░▒█░███▒█████
+▓▓▓▓▓█▓▒███▓▒████▓▓▓▒▓▓▒▒▒▓▓▓▓▓█▓▓▓▓▓▓▓███▒████▓▒▒▒▒▒░▒ ░░░░░  ░█████▓██████▓███▒▒▒█▓▓███████░███▒██
+██▓▓▒▒▒████▓▓▒▓▓██▒██▓█▓▓▒▒▓▒░  ░     ▓███▓████▒▓▒▒▒░░   ░      ███▓▓███████████▒▒▓▒▓████████▓██████
+░▒▒▒██▒█▓██▓▒▓▒▒▓▓▒█▓████▓▓▒░ ░▒ ░▒▓▒▒▓███████▓▒░░▒░░▒█▓ ░▒▒   ▒▓▓██▓████████▓████▓░████████████████
+▒▓████▓▒████▒▓░░▓█▒█░░███▒▒▓░░░   ▒▓▓▓▒▒███▓████▓░▓▒▒▒██▓▒▒▒▒▓▓▒▒▓██████▓██████████▒█████████████▓██
+▒░░░██▓█▓██▒▒▓████▒▒▓█▓▓▓▒▒▒▒░▒  ▒▓▒▒▒▓████████▓█▓▓▒▒▒▒█▓▒▒▓▓▓▓█▒█▓████████████████░████████████████
+▒▓▓█▓▓▓░█░▒░░▒▒▒▒▒▓▒▒▒▒▒▒░░▓█ ▒▒▒▒▒▒▒▒▒███░▒▒▓▒▒▒▓▓▓▒▒▓▓▒▒▒▒▒▓█▓█▓▓█▓▓█████████████░████████████████
+▒░ ▒▒ ▓▓█▓██░░▓▒▓▒▓█████████▒▒▒▓▒▒▒▒▒▒▒▒░▒▒▒▒▒▓▒▒▓▒▓▒▒▒▒▓▒▒▒▓▓▓▓███████████████▓▓██ ████████████████
+▓▓▓▓▒▓▒██▓██▒▓▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓██▒▒▒▒▒▒▒▓▓▒▓▒▓▒▓▒▒▒▒▒███░░██▒▒▓▓███████████▓▒▒▓░▒░█▓▓░███████████████
+▓▒▓▒▒▓▒█████▒▒▒░▓▓▒▒▒▒▒▓▓▓██████▓▓▒▒███████▒▓▒▒▓▒▒███▓░░░███░██████████████▓▒░░▒░██▓▒███████████████
+▓▒▒▒▒▒▒█████▓▒▓█▓▒▓▒▓███████████████████████▓▒▒▒▒████   ████▒▒▓██████████████░▒░░██▓▒████████████▓██
+█▒▒▒▒▒▒▒▓▓▓▓▓▒████▓▒█████████████ ▓███████████▒▒█████  █████▒▒████████████████▒▒░██▒▒▓██████████▓▓░▓
+▒▒▒▒▒▓▓███▓▓▒▒▓▓▓██▒████████████▓▒▓██████████████████   ████▒▒▒████████████████░ ██▒▓▓██████████▓▓▓█
+▒▓▒▒▒░░███░ ░ ▒░▒▒█▒█████████████▓▒██████████████████  ▒████▒▒▒▒████████████████▓██▓█▓██▓▒█▒▓██▓▓█▓▓
+█░░▓▒░▒▒░░▒▒▒▒░░ ▒▒█████████████▓▓▒█████████████████▓░▒█████▒▒▒▒██ ▒█▒██▓███████████▓█▒▒▓▒▓▒▒▓▓▓██▒█
+█▒ ▓▒░      ▒░░░  ░█████████████▓▓▓██▒█████████████▓▓ ██████▓▒▒▒▓█   ░██▓████████▓█▓▓▒▓▒▓▓▓▓▓▓██▒▒▓█
+█▒ ▓▒░          ░░░████████████▓▓▓▓███ ░░ ██████████▒▒▓██████▒▒▓▒██████████▓▓▓▓▓▓█▓▓█▓▓▒▒▓▓▓█▓▒▓▒▓▒▓
+█▓ ▒░░▒▓▓ ░      ░█████████████▒▒▒▒████░ ████████▒▒░ ██▓█████▒▒▒▒██████████▓▓▓▓▓█▒▓▓▒▓▒▒▓▓█▒█▒█▒▓▓▓▒
+██░▒░░▒▓▓▓█▓░░█▒░░█████████████▓▓▒▓███████▓██████▒▒░ ▓ ██████▒▒▒▒▒████████▒▒▒▒▓███████████▒▒▓▒▒▓▒▓▒░
+▓▓▓▓▒▓█████████████████████████▒▓▒▒▓██████▓███████▒▒ ▒ ██████▓▒▒▒▓▒████▓▒▒▒▒███████████████████░░░▓▒
+███████████████████████████████▒▒▒▓▒█████▓▓███████▒▒▒▒███████▒█▓██ ▒▒▒▒▒███████████████████████████▓
+█████████████████████████████████▓▒▒██████▓███████░▒▓▓████ █▒██▒▒▒▓ ███████▒████████████████████████
+███████████████████████████████▓▓▒░▒██████████████ ▓▓████    ▒▒▒█▒▒█████████████████████████████████
+███████████████████████████████▓▒▒▒███████████████  ▓██▓█       ▒▒▒▒███████████████▓████████████████
+██████████████████████▒█▒                ▒████████   ▒▒▒░▒▒     ▒▒       ███████████████████████████
+████████████████████████ ░░░              ████████       ░▒               ██████████████████████████
+████████████████████████                   ████████                       █████████████▓▓███████████
+███████████████████████░                   ████████                        █████████████████████████
+███████████████████████░░░                  ███▓▒▒██                       ▓▓▓███▓████████████████▓█
+███████████████████░▓██ ░                   ███▒▒▒███                      █████▓▓▓▒▓█████████████▓█
+██████████████████   ███░                   █▓█▒▒▒████                     ████████████████████████▓
+█████████████████    ███░░                  ██▒▒██████    ░                █████████████████████████
+████████████████     ███                    ███████████                    █████████████▓███████████
+███████████████  ░ ░  ██                    ████████████                   ██████████████▓██████████
+█████████████░         █                    ████████████                   █████████████████████████
+█████████████░░█       ▓                    █████████████                  █████████████████████████
+████████████████                 █░        ░█████████████  ░               █████████████████████████
+████████████████       ▒          █        ▒█████████████                 ▓█████████████████████████
+█████████████████      ███        █        ███████████████                ░█████████████████████████
+████████████████       ███        ██       ▒██████████████                ▓█████████████████████████
+█████████████████ █░░▒████        ██       ░██████████████                ██████████████████████████
+██████████████████████████        ░█       ███████████████               ███████████████████████████
+██████████████████████▓███▒       ▒█       ███████████████              ████████████████████████████
+██████████████████████████▒       ██       ███████████████              ████████████████████████████
+██████████████████████████▓        █       ░███████████████            █████████████████████████████
+██████▒████████████████████       ▓█        ███████████████            █████████████████████████████
+████████████████████████████      █▒        ███████████████░           ███▓▓▒▒▓▓████▓██████████▓████
+████████████████████████████     ██         ████████████████░          ▓███▓█▓████████▓█████▓███████
+███████████████████████████▒░    ██        █████████████████           ▒███▓▓██▓▓▓█▒▓█▓██▓██▓▒█▓████
+███████████████████████████▒█░░  ███      ███████████████████          ██████▒███████████████▓████▓█
+███████████████████████████▒▒▒░ █▒██      ███████████████████▓        ░▒▒▒▒▒▒▒▒░▒▒▓▓███▓▓▓▓██▓▓█▓▓▓█
+███████████▓████████████████▓ ░█████▓      ▒▓████████████████      ░░▒▒▒░▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓█▓█▒▓▒▓█▒▒▒▒
+████████████████████████▓██████████▒▒░▒█▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░▒▒░▒▒░   ▒▒▒▒▒▒▒▒▒▒▒▒░▒▓▒▒▒▒▒▒▓▓▓█▓▓█▓▓██▓
+███████████████▓████████████████████▒▒     ░▓▓▒▒▒▒▒▒▒▒▒▒▓▓█░█░     ░░░▒▒▒▒▒▒▓▓▓▓████████████████████
+▓█▒█▓▓██████████░██████████████████████████████████████████      ▒██████▓██████████████▒████████████
+████████████████████████████████████████████████████████▓███████████████████████▒█████████▒█████████
+████████▓████████▓█▓████████████████████████████████████████████████████████████▓██████▓████████████
+███████████████████████████████████████████▒████████████████████████████████████████████████████████
+                    """)
+                    print("Te ves obligado a para el coche un rato para descansar, en lo que lo haces se acercan unos hombres en traje con folletos para hablarte de nuestra salvadora la Flamígera Mano Láser Invisible. También abren una maleta y sacan una caja registradora portátil porque su dogma se basa en el intercambio. \n \n")
+                    input()
+
+                    print("Puedo: \n A. Comprar una escopeta por 4 de dinero \n B. Vender 8 de combustible por 6 de dinero \n C. Comprar una gota de felicidad líquida por 3 de dinero \n D. Dar las gracias sin comprar nada")
+
+                    while True:
+                        answer = input("Elijo... ").upper()
+                        if answer == "A" or "B" or "C":
+                            match answer:
+                                case "A":
+                                    if (money >= 4) & (has_weapon == False):
+                                        money -= 4
+                                        has_weapon == True
+
+                                        print("'Bendita sea la Mano Invisible que conecta la necesidad, el necesitado y el desnecesitador, esta magnífica herramienta de perscusión y combustión acabará con todos sus problemas.'")
+                                        input()
+                                        break
+                                    else:
+                                        print("O me falta dinero o no quieren que tenga dos armas.")
+                                case "B":
+                                    if (fuel >= 8):
+                                        fuel -= 8
+                                        money += 6
+
+                                        print("'Excelente, excelente, flamígeros son estos magníficos intercambios, dinero dado por el servicio prestado y con toda esta gasolina podemos quemar al culto rival actual.'")
+                                        input()
+                                        break
+                                    else:
+                                        print("No tengo suficiente dinero como para pagarlo.")
+                                    break
+                                case "C":
+                                    if (money >= 3):
+                                        money -= 3
+                                        sanity += 3
+
+                                        print("'Muy bien, muy bien, nuestra patentada - más o menos - sustancia inducirá en usted brevemente un estado de incontenible euforia seguido de terrible y paralizante depresión, seguidamente descubrirá que el computo total de bienestar es vagamente positivo.")
+                                        input()
+                                        break
+                                    else:
+                                        print("No tengo suficiente dinero como para pagarlo.")
+                                case "D":
+                                    print("Les doy las gracias y me alejo dándome la vuelta a tiempo de ver cómo se meten en una boca de alcantarilla")
+                                    input()
+
+                case 2:
+                    print("""
+                               ▓███████                 ██▓████                                     
+                              ████▓█████              ██▓▓▓▓▓▓█▓                                    
+                             █████▓██████             ██▓▓▓▓▓▓███                                   
+                             ██▓██▓▓█████            █▓▓▓▓▓▓▓▓▓▓▓                                   
+                             ████▓▓██████             █▓▓▓▓▓▓▓▓▓█                                   
+                              █▓█▓██▓▓██           ███ █▓▓▓▓▓▓▓▓                                    
+                              ▓██▓▓▓▓████████████████████▓▓▓▓██                                     
+                             ▓█▓█▓█▓▓▓███████████████████▓▓▓▓▓█                                     
+                             ▓▓██▓▓██▓███████████████████▓█▓█▓█                                     
+                           ███████▓▓▓▓▓██████████████████▓▓█▓▓█                                     
+                         ████████▓▓▓▓▓▓██████████████▓██▓▓▓▓▓▓██                                    
+                      █████████▓███▓█▓████▓████████▓█▓███▓▓▓▓██▓██                                  
+                   ██████████████▓▓▓▓▓██▓▓▓▓▓▓▓██▓▓▓▓██▓▓▓▓▓████████                                
+             ▓▓▓█████████▓▓██▓█▓▓█▓▓█▓█▓▓▓▓█▓▓██▓▓▓▓█▓▓▓▓▓▓▓▓▓█▓█████                               
+          ███████████████████▓█▓█▓▓█▓▓▓▓▓▓▓█▓▓▓▓▓█▓▓▓▓▓▓▓█▓▓▓▓▓▓███████                             
+       ████████████████▓████████▓█▓█▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█▓▓▓▓▓▓▓▓█▓▓████▓█████                           
+     ██████████████████████████▓████▓▓▓▓▓▓▓▓▓█▓▓▓▓▓▓▓▓█▓█▓▓▓█▓▓█▓▓▓█████▓██                         
+    ▓█████▓▓█████████████▓█▓█▓▓███▓▓██▓▓▓▓█▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█▓▓▓▓▓▓█▓▓█████                        
+  ███████▓▓████████▓▓▓▓██▓██▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░▓█▓▒▒▓▓▓▓▓▓▓█▓▓▓▓▓▓▒▓▓███████                      
+ ███████▒▓████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▓▓▓▓▓▓▓▓▓▓▓▓█▒▓▓▓▓▓▓▓▓▓▓▓▓▓▒▓▓▓▓▓▓██████                     
+ █████▓▓▓████████▓██▓▒▓▓▓▓▓▓▓█▓▓█▒▓▒▓▓▓▓▓▓▓▓█▓▓▓▓ ▓▓▓▓▓▓▓▓▓▒▓░▓▓▓▓▓░░ ░▒▓▒▓████                     
+█████▓██████████▓▓▓░░█▓▓░▓▓▓▓█▓▓▓▓▓▓▓█▓▓▓▓▓▓▓▓▓▓▓▓▒▓▓█▓▓▓▓▓▓▓▓▓▓▓▓░ ▓▓▓▒▓▓█▓▓██▓█                   
+█████▓ ████████▓▒      ░▓▒▓▒▓▓▓▓▓▓▓▓▓▓█▓▓▒▓▓▓▓▓▓▓▓▓▓░▓▓▓▓▓█▓▓▓▒█▓ ░     ░░▒█▓██▓██                  
+████▓▓▓██████░          ░░ ▒▓▓▓█▓▓░░▓▓▓█▓█▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ ░░░         ▒▓█▓▓█                  
+███▓▓▒██████▓            ░ ░▒▒▓▓▓▓░▓▓ ▒█▓▓▓▒▓▓▓▓▒ ▓▓█▓▓▓▓▓▒▓▓▓▒ ░            ▓███▓█                 
+███▓█▓▓██████ █▒█         ▓▓▓▓███▓▓▓▓█▓▓▓▓▓▓▓█▓▓▒▓▓██▓█▓▓▓▓▓▓█▓▓             ▒▓█▓▓██                
+███▓▓▓▓██████░█            ▒▓███▓▓▓▓▓▓▓█▓▓▓▓▓█▓▓▓▓▓▓▓▓▓▓▓▓█▓▓█▒▓░          ▒ ░▓█▓ ▒█                
+██▓▒▓░░██████ ░░           ░▓▓▓▓▓█▓▓█▓▓█▓███▓▓▓████▓█▓▓▓▓▓▓▓▓█▓            █ ███▒░░██               
+██▓▓█▓▓█████▓▓░          ▒▒▓▓▓▓█▓█▓▓▓▓██████████████▓███▓█▓▓▓▓▓▓             ▓█▓▒▒ ▓█               
+██░▒▓▓▓███████▓ ▓ ░  ▓▒▒▒▒▓▓▓▓████████▓█████████████████▓██▓█▓▓▒▓           ░▓█▒   ▓█               
+█▓▒░░▓▓██████▓▓▓▓▓▓░█ ▒▓▒▓▓▓▓████▓█▓█████████▓██████▓███▓██████▓░▒░░░    ▒░░░██░   ░█               
+█▓▒▒░▓▓█████▓▓█▓▓▓▓▒▓█▓▒▓████▓▓███████▓██▓▓███▓▓██▓█▓██████████▓█▓▓▓▒▒░░▒▓▓▓▒███   ░█               
+█▓▒▓████████▓██▓▓▓█▓█▒▓▓▓██▓█████████████▓███████████▓███████████▓▓▓▓▓▓▓▓▒▒▓▓▓█▓▒  ▒█               
+█▓▒ ▒▓███████▓██▓▓█▓▓▓███▓▓████████▓█▓██▓▓▓▓█████████▓▓▓████▓▓▓█▓██▓▓▓▓▓░▓▓▓▓▓█    ▓█               
+█▓▒ ▒███████████▓▓█████████████████▓▓▓▓█▓▓███▓█████▓█▓▓▓▓█▓████████▓▓▓▓▓▓▓█▓█▓█   ▒▓█               
+██░░▒▓▓█████████▓█████▓█████████▓█▓███▓█▓█▓▓▓░▓▓▓▓█▓███▓▓▓▓▓▓████████▓█▓▓▓████▓█░ ▓▓█               
+ ▓░░▒░░███████████████████████▓███▓█▓█▓█▓▓▓▓▓▓▒▓▒▓▓▓▓▓▓▓█▓▓▓██████████▓▓▓█▓▓███▓ ▒▓██               
+ ▓█ ░ ▓████████████████████▓███▓█▓▓▓▓█▒▒▒▓    ░▒▒░▒▒▓▒▓▒▓▓▓▓█▓▓▓▓▓▓████▓███████  ░████              
+  ▓█▓▓▓░██████████████████████▓▓▓▓▓▓▓▓▓▓▒▒░░     ░ ░░ ░░▓▓▓▓▓█▓▓███████████████ ░▒████              
+   ▒▒▓░░▓█████████████████████▓▓▓▒▓▓████▒▒░░  ░░        ░░▓▓██▓█▓███████▓█████▓▒░█▓▓▓▓█             
+         ██████████████████▓██▓▓░▓▓██▓████  ░             ░▒▓▓▓█▓▓▓█▓███▓▓████▓███▓▓▓██             
+          ▓███████████████▓▓▓▓▓   ▓▓▓░                      ▒░▓█▓▓████████▓███ ░▓▓▓▒▓█              
+           ███████████████▓██▓▒  ▓▓░▒▒                      ▒▓▓█▓█████████████ ░▓▓▓█                
+           █████████████████▓▓▓░░░                           ▒▓▓▓███████▓█████░░▓██                 
+           █████████████████▓▓▓▓                            ░▒▓▓▓████▓███████████                   
+          ███████████████████▓▓▓░                         ░░▓▓▓▓▓▓████████████▓        █            
+         ██████████▓████▓█▓▓▓▓▓▓░                          ▓▓▓▓▓▓▓▓▓▓██████▓                        
+         ██████████████████▓▓▓▓▓░░     ░                   ▓▓▓▓█▓▓▓▓█▓▓██▓▓                         
+        █████▓█████████████▓▓▓▓▓░░░░   ░                ░ ░▓▓▓▓█▓▓▓▓██████▓                         
+        █████████████████▓█▓█▓▓▓▒▓▓▒                    ░░▓▓▓█▓▓▓▓▓▓▓▓█████                         
+       ██████▓▓██████▓█▓█▓█▓▓▓██▓▓░░▓                 ░▒▒▓▓▓▓▓▓▓▓▓▓███████▓                         
+       ███████▓▓██████████▓▓▓▓▓▓▓▓▓░▒░              ░░ ▒ ▓▓▓▓▓▓▓█▓▓▓▓▓▓█████                        
+       ███████▓▓▓▓███▓█▓██▓█▓▓▒▓█▒▓▓▒▒▒░▒░░▒░  ░▒░ ░░░▓▓▒▒▓▓▓▓▓▓▓▓▓█▓████████                       
+       ███████▓▓██████████▓██▓▓▓▓▓▓▓▓▓▒▒░▓▓▒▓▓ ▓▒▓░▓▓▓▓▓▓▓▓▓█▓▓▓▓██████▓█████                       
+      █████████▓███▓▓████▓████▓▓▓▓▓█▓▓▒▒▒░        ░▒ ▓▓▒█▒▓▓▓█▓▓▓███▓█████████                      
+      ██████████▓█▓▓███▒▓▓▓▓▓███▓█▓▓▓▓▓▓▒▒▓░  ░▒░ ░▓ ▓▓█▓███████▓▓▒▓▓▓█▓██▓███▓                     
+      ██████████▓▓▓▓▓█▓▓▓▓▓█▓▓██▓██▓▓███████████████▓▓████████▓▓▓▓▒▓▓▓▓▓█▓█▓█▓▓                     
+     ██████████▓▓▓▓▓▓▓▓█▓▓▓▓▓█▓▓██▓▓██▓▓████▓████▓▓████████▓█▓█▓▒▓▓▒▓▓▓▓▓██████▓                    
+     █████████▓▓▓▓▓▓█▓▓██▓▓▓█▓████▓█▓█▓▓████████▓███████████▓▒▓▒▓▓▓▓▓▓▓▓▓▓▓██████                   
+     █████████▓▓▓▓▓▓▓▓▓▓▓▓███████████▓█▓██▓████▓█▓▓████████▓▓▓▓▓▓▓▓█▓▓▓▓▓▓▓████▓██                  
+    ██████████▓▓▓▓▓▓▓▒▓▒█▓▓██████▓█▓█▓█▓█▓█▓█▓████▓█████▓▓▓▓▓▓░▓▓▓▓▓▓▓▓▓▓▓▓▓█▓█▓▓█▓█                
+    ██████████▓▓▓▓▓▓▓▓▒▒▓▓▓█▓██████▓█████▓▓▓▓▓▓▓▓█▓▒▓██▓▓▓▓▓▓▒▓▓▓▓▓▓▒▓▓▓▓▓▓▒░▓▓▓▓▓▓▓▓▓              
+    █████████████▓▓▓▓▓▓▓▓▓▓▓█▓▓██▓███▓█▓▓▓▓▓██▓▓████▓▓▓▓▓██▓█▓▓▓▓▓▒▓▓▓▓▓▓▓▓▒▒░▓▓▓▓▓▓███▓            
+   ▓███▓███▓█▓▓████▓▓▓▓▓▓▓▓▓██▓█▒█▓▓▓▓▓▓▓███████▓▓███▓▓██▓▓▓▓█▓▓▒ ▓▒▓▓▓▓▒ ░░▓▓░▓▓▓███████           
+   ▓██████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█▓█▓██▓██▓▓▓█▓▓▓▓▓▓██▓▓▓▒▒▓▓▓▓▓▓▓▓▓▓▓▒   ░░▓▓▒▓█▓██████▓██         
+   ▓█████████▓█▓▓▓▓▓▓▓▓▓▓▓█▓▓▓▓▓▓▓▓▓▓████▓▒▓▓██▓██▓███▓▓▓▓█▓▓█▓▒▓ ░▒▒░  ░░░░░▒▓█▓▓▓████████▓        
+   ▓███████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█▓▓▓██████████▓▓▓▓████▓▓▓▓▓▒█▓▓▓▒  ░░       ▒░░░▒▓▓▓▓▓▓█▓█▓███▓       
+   █████▓████▓▓▓▓▓▓▓▓░▓▓▓▓▓█▓██▓█▓██▓██████▓▓▓▒██▓█▓▓▓▓▓▒▓▓▓░▒▒▓▒▒        ░░░░▓ ▒▒▓▓▓██▓█████▓▓     
+   ▓█▓▓██▓▓░░▒▒▓▓▓▓▓▓▓▓▓▒▓▓▓▓▓▓▓▓▓▓▓██████▓██▓▓▓▓▓▓██▓▓▓▓▓▓▓▓▒▒░░░          ░ ▒░ ▒░▒▒▒▓▓█████▓▓▓    
+   ▓▓██████▓██▓█████████▓████▓▓▓▓▓▓▓▓██████▓███▓▓▓█▓▓▓▓▓▓▓▓▓▓▒░▒           ░░ ░ ░░░░▒▒▓▓▓▓███████▓  
+   ▓████████████████████▓▓▓█▓▓███▓▓█▓▓▓▓█▓▓▓▓▓▓▓▓▓▓█▓▓▓▓▓▓▓▓░▒ ▒             ░░░░▒▒▒▓▓▓▓▓▓▒▓▒▓▓████▓
+                    """)
+                    print("El aire se vuelve frío sin aviso, incluso el radiador del coche es incapaz de combatirlo, un estanco de niebla envuelve el coche y figuras sombrías lo rodean por todas partes. \n \n 'Somos los Gy'Yira, venimos del lado oscuro de Titán... \n \n")
+                    input()
+                    print("'Con enormes descuentos' un perro ciego con tres brazos se acerca a la ventanilla con su catálogo. \n \n")
+
+                    print("Puedo: \n A. Comprar 6 de comida por 3 de salud (Como muestra) \n B. Comprar un dispositivo de curación por 4 de dinero \n C. Comprar una máquina de energía infinita por 6 de dinero \n D. Dar las gracias sin comprar nada")
+
+                    while True:
+                        answer = input("Elijo... ").upper()
+                        if answer == "A" or "B" or "C" or "D":
+                            match answer:
+                                case "A":
+                                    if (health >= 3):
+                                        food -= 6
+                                        health += 3
+
+                                        print("'Enormemente agradecidos, tu muestra ayudará a mejorar nuestros productos, te daremos barritas energéticas a cambio.'")
+                                        input()
+                                        break
+                                    else:
+                                        print("No tengo suficiente sangre como para sobrevivir a darles una muestra.")
+                                case "B":
+                                    if (money >= 4) & (healing_device == False):
+                                        money -= 4
+                                        healing_device = True
+
+                                        print("'Aseguramos que acabas de hacer la mejor de las compras, este dispositivo es capaz de, no solo curar, sino sostener vida indefinidamente sin enfermedad, envejecimiento o descendencia, viene en la letra pequeña.'")
+                                        input()
+                                        break
+                                    else:
+                                        print("No tengo suficiente dinero como para pagarlo o ya tengo un dispositivo de curación.")
+                                    break
+                                case "C":
+                                    if (money >= 6) & (infinity_engine == False):
+                                        money -= 6
+                                        infinity_engine = True
+
+                                        print("'Excelente compra, este cogitador de enlazamiento psiónico alimentará tu vehículo sin necesidad de combustible para siempre, una magnífica adquisición. Claro que tenga cuidado, si interfiere con el oscilador interno podría destruir su planeta.")
+                                        input()
+                                        break
+                                    else:
+                                        print("No tengo suficiente dinero como para pagarlo o no quieren dos máquinas infinitas dando vueltas por el mundo.")
+                                case "D":
+                                    print("Les doy las gracias y me voy en cuento se alejan del coche")
+                                    input()
+
+                case 3:
+                    print("""
+▒▒▒▒▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒░▒▓▒░██░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+▒▒▒▒▒▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▓█▒▒▓▒▒▒▓██▒▒▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒
+▒▒▒▒▒▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░█░▒██████▒▓████▓░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒░▒▒
+▒▒▒▒▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░█░▒█████████████▒▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒░▒▒░
+▒▒▒▒▒░▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒███████▓███████▒▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▒░▒░
+░▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒██░▒█▒█▒▒██████▒▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒░▒░▒▒
+░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒█████▒███▓██▓██▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒░░░▓▓▒░░░░░░░▒▒▒░
+░░░░░░░░░░░░░░░░░░░░░░▒▒▒░▓▒░░░░░░░░░░░░░░░░░░░░▒████▒█▒█████▒██▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░██▓▒▓▒▒░░▓██▒▒▒▒▒▒▒▒░▒
+░░░░░░░░░░░░░░░░░░░▒█▓▓▓▒▒▓▒▒██░░░░░░░░░░░░░░░░▓▒█████████████▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒█▓▒▒▓▒▓▒░░▒██▒▒▒▒▒▒▒▒▒
+░░░░░░░░░░░░░░░░░▒██▓▒▓▓▓▓▓▓████▒░░░░░░░░░░░░░░░▒▓████████████▓░░░░░░░░░░░░░░░░░░░░▒▒█▓▒▒▒▓▒▒░░░░██▒░░█▒▒▓▒▒███▒▒▒▒▒▒░░▒
+░░░░░░░░░░░░░░░░░▒▓▓▓▓█▓█▓▒▓▒███▒░░░░░░░░░░░░░░░░▒▓███████▒▒██▒░░░░░░░░░░░░░░░░░░▒████████▓▓██▒░▒██▒▒░▒▒▒▒▒░░▒▒█▒▒▒▒░░░░
+░░░░░░░░░░░░░░░░░▒█▓▒▓▓▒▒▓██▓▓██▒░░░░░░░░░░░░░░░░░░██▓▒░░░▒███▒░░░░░░░░░░░░░░░░░▒▒███████▓▒████▒▒██▒█▒▒▒▓░░░█▒▒█▒▒░░░░░░
+░░░░░░░░░░░░░░░░░▒█▓▓▒▓▓▒███████▒░░░░░░░░░░░░░░░░░░▓▒░█░░░░▒▒█▒░░░░░░░░░░░░░░░░░▒██████████████▒▒▓▒█▓▒▒▒░░▒▒█▓▒█▒░░░░░░░
+░░░░░░░░░░░░░░░░░▒▓▓▓▓█▒▒▒▒█████▒░░░░░░░░░░░░░░░░░▒░░░░░░░░░▒▒▓█▓░░░▒░░░░░░░░░░░▒██▓███▓▓▒█████▒░▒█▒░░░▒░░▒▒▓███░░░░░░░░
+░░░░░░░░░░░░░░░░░▒▓▓▓▒▒▒▓█▒█▓███▒░░░░░░░░░░░░░░░░░▒░░░██░░░░░░░▓░░░░▒░░░░░░░░░░▒▒█████▓███████▓▒░░█▒░█▓░▒░▒▒▒█▒▒█░░░░░░░
+░░░░░░░░░░░░░░░░░█▓▓▓▒▓█▓▓▓█████▒░░░░░░░░░░░░░░░▒░░░░█▓▒█░░░▒░░▒░░░░░▒▒▒░░░▒░░░░▒████▓███████▒█▒░░▓██▒▒▓░░░░░░▒░█░░░░░░░
+░░░░░░░░░░░░░░░░▒█▓▓▓▒▒▒▓▓▓▒███▒░░░░░░░░░░▒░░▒░░░▒░░░▒░░░░░░▒░░░░░▒░░░░░█░░▓░░░░▒███▓▒███████▓█▒░░░██▒░░░░░░░░░░█░░░░░░░
+░░░░░░░░░░░░░░░░▒▓▓▓█▓██▒▓▒▓███░░░░░░░░░░░▒░▒░░░░░██░░░░░░░░█░░░░░░░▓░░░░▒▒▒▒░░░░▒█████████▒▒▒█▒░░▓░░░░░░░▒░░░░░░░░░░░░░
+░░░░░░░░░░░░░▒▒░░░░░░░░░▒▓██▒▓▒░░░░░░░░░▒█▓▒░░░░░░██░░░░░░░░█░▒░▓░▓░▒▒░░▒░░░░░░░░░▒████▓▓░░░░░█▒░▒▒░░░░░░▒░░░░░░░░░░░░░░
+░░░░░░▓░░░░░░░░░░░░░░░░░░░▒▓██▒░░░░░░░░░▒░░░░░░░░░▓▒░░░░▒░░░█░░░▒░░░░▒░░▒░░▒░░░░░░░▓░░█░░░░░░░█▒▒░▒▓▒░░░░▓█░░░░░░░░░░░░░
+░░░░░░░░░░░░░░░░░░░░░░░░░▒░▓▒▓████▓█▓█░░░░░░░░░█░░▒░░░░░█░░░▒░░░▒░░▒▒░░░░░░░░░░░░░▒█░░░░░░░░░░░▒▒█▒▒█▒▒░░░░░░░░░░░░░░░░░
+░░░░▒░░░░░░░░░░░░░░░░░░░░░░░▒▒▒▒▓▒░░░▒░░▒░░░░░░▒░░▒░▒░░░█░░░█▓░░░░░▒░░▒░▓░░░░░░░░░▒▒░░░░░░░░░▒▒█░░░░▒▒▒▒░░░░░░░░░░░░░░░░
+░░░░░░░░░░░░░░░░░░░░░░░░░░▒▓█░░░▒░▒▒▓▓█▒▒▒░░░░░▓░░░░░░░░█░░░░░░░░░▒░░░░░░▒▒▒░░░░░░░░░░░░░░░░░░░░░░░░░▒▓▒▒░░░░░░░░░░░░░░░
+░░░░░▒░░░░░░░░░░░░░░░░░░░░░░░▒░░░░▒▒███▒▒░░░░░░░░▒░░░░░░░░░░░░░░░░▒░░░░░░░▒█░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▒█░░░░░░░░░░░░░░░
+░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▒░▒▒▒███▓░░░█▒░░░░░░░░░░░░▒░░░▓▒░░░▒░░░░░░░░░▒░▒░░░░░░░░▒░░░░░░░░░░░░░░░░░▓█░░░░░░░░░░░░░░
+░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒░▒▒▒▒▓▒▓█▒░░░░░░░░█▒░░░░▒░░░░░░█░░░░▓░░░░░░░░░░░░░░░▒░░░░░▒▒░░░░░░░░░░░░░░▒▒▒▓░░░░░░░░░░░░░
+░▒░░░░░░░░░░░░░░░▒▓░░░░░░░░░░░▒▒▒▓██▓█▒░░█░░░░▒░▒░░▒▒██▓░░░░░▓░░░█░▒▒░░░░░▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒░░░░░░░░░░░░
+░░░░░░░░░░░░░░░░░░░░░░▒░░░░░░░▒░░▒▒▓█▓░░░█░▓░░█▒▒░░░░█░▒░░░░░░░░▒░░█░░░░░░░░░░░░▒░░░░░░░▒░▓░░▒░░░░░░░░░░░░▒█░░░░░░░░░░░░
+▒░░░█░░░░░░░░░░░░░░░░░░░░░░░░░▒░░▒▒░░█▒░░▓░▒░░▓▓▒░▒▒░░░░░░░░░░░░▒░▓░░░░░░░░▒▒░░░▒░██░░▓░░▓░░▒░░░░░░░░░░░░░░░░░░░░░░░░░░░
+░░░▒▒░░░░░░░░░░░░░░░░░░░░░░░░░░▒░░░░▒▓░░▒░░░░▒█░▓░▓▒█░░░░░░░░░░░░░░░░░░░▒░░░░▒▒▒████░░░░▒▓▒░░░░▒░░░░░░░░░░░░▒░░░░░░░░░░░
+░▒▓░░▒░░░░░░░░░░░░░░░░░░░░░░░░░█▒░▒░▓▒░░▒░░░▒▓▒▒░█░█▒▒░░░░░░░░░░░▒░░░░░░▒░░░█▒▓▒████▓███░░░░░░░▓░░░░░▒░░░░░░░░░░░░░░░░░░
+░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▓░█▓▒█░░▒▒░░▒░▒▓▓▒█░░░░░░░░░░░░░░░▓░░░░░░░░░░░█▓▒▒█▒█▒▓▒▒▒▒▒░░░░▓░░░░▓▒▒▒▒░░░░▓░░░░░░░░░░
+░▒░░░░░░░░░░░░░▒░░░░░░░░░░░░░▒░▒▒████░░█▒░░░▒░░▓░█░░░░░░░░░░░░░░▒▓░░░░░▒░░░▒██▓░▒█████▒░░▒░░░░░░░░░░░░░▒▒░░░░░░░░░░░░░░░
+                    """)
+                    print("Mientras que avanzas por la carretera decides pararte a comer, entras en un restaurante de carretera, pero antes de poder decir nada te das cuenta de que un grupo de humanoides pálidos vestidos en cuero - llenos de pinchos y garfios clavados en su piel - han tomado el local. \n \n Uno se gira en tu dirección sonriendo, 'Lo siento, estamos haciendo las rondas y tenemos que matar a todos estos, pero si quieres podemos venderte algo de nuestro excedente'")
+                    input()
+
+                    print("Puedo: \n A. Comprar 5 de comida por 2 de dinero \n B. Comprar 4 de cordura por 4 de salud \n C. Comprar una máquina de estabilidad mental \n D. Dar las gracias sin comprar nada")
+
+                    while True:
+                        answer = input("Elijo... ").upper()
+                        if answer == "A" or "B" or "C" or "D":
+                            match answer:
+                                case "A":
+                                    if (money >= 2):
+                                        money -= 2
+                                        food += 5
+
+                                        print("'Excelente, la comida de este sitio no es la mejor, pero no se preocupe porque somos excelentes cocineros, aunque no lo parezca.'")
+                                        input()
+                                        break
+                                    else:
+                                        print("No tengo suficiente dinero como para pagarles la comida.")
+                                case "B":
+                                    if (health >= 5):
+                                        health -= 4
+                                        sanity += 4
+
+                                        print("'Muy bien, haremos un rápido reajuste neuronal para mejorar cómo se siente, solo tardaremos unos veinte minutos. No se preocupe, hemos desinfectado todas las cuchillas de antemano.'")
+                                        input()
+                                        break
+                                    else:
+                                        print("No sobreviviría a la tortura.")
+                                    break
+                                case "C":
+                                    if (money >= 6) & (mind_shielder == False):
+                                        money -= 6
+                                        mind_shielder = True
+
+                                        print("'Fascinante, un mortal acaudalado, verá, esto es lo que usamos nosotros' Dice emocionado sujetando un aparato de unos quince centímetros cúbicos lleno de ganchos y pinchos 'Denos un momento y se lo colocaremos en el cerebro, nunca más volverá a sufrir.'")
+                                        input()
+                                        break
+                                    else:
+                                        print("No tengo suficiente dinero como para pagar su extraño aparato.")
+                                case "D":
+                                    print("Les doy las gracias y me voy lo más rápido posible")
+                                    input()
+
+                case 4:
+                    print("'Nos volvemos a ver' Un cegador estallido de luz se produce delante del coche, se queda detenido de inmediato 'No hay tiempo para explicaciones, soy tu yo de otra línea temporal y he venido porque necesito calderilla'")
+
+                    print("Puedo: \n A. Comprar un arma láser por 4 de dinero \n B. Comprar una armadura futurista por 4 de dinero \n C. Preguntarle cómo está haciendo esto \n D. Dar las gracias sin comprar nada")
+
+                    while True:
+                        answer = input("Elijo... ").upper()
+                        if answer == "A" or "B" or "C" or "D":
+                            match answer:
+                                case "A":
+                                    if (money >= 4) & (has_weapon == False):
+                                        money -= 4
+                                        has_weapon == True
+
+                                        print("'Por fin voy a poder ir al cine, con eso puedes desintegrar casi cualquier cosa y genera munición a partir de humedad ambiental así que ni te preocupes por la munición. Nos vemos.' Desaparece de nuevo con un estallido de luz.")
+                                        input()
+                                        break
+                                    else:
+                                        print("No tengo suficiente dinero o ya tengo un arma encima.")
+                                        break
+                                case "B":
+                                    if (money >= 4) & (body_armor == False):
+                                        money -= 4
+                                        body_armor == True
+
+                                        print("'Bien, con esto puedo pagar al fontanero, ve tranquilo que incluso si te disparan con artillería eso va a salvarte. Una vez, claro. Nos vemos.' Desaparece de nuevo con un estallido de luz.")
+                                        input()
+                                        break
+                                    else:
+                                        print("No tengo suficiente dinero o no puedo llevar dos armaduras puestas.")
+                                        break
+                                case "C":
+                                    print("'Sencillo, en mi línea temporal me he hecho una serie de artefactos que, combinados con una máquina de energía infinita y unos cuantos secretos alienígenas, me han permitido trascender las limitaciones de la humanidad. Ni la chica puede detenerme ahora, pero sí quedarme en la calle así que comprate algo por caridad.'")
+                                    input()
+                                case "D":
+                                    print("'Vale, muy bien, pero como me entere de que le compras algo a uno de los alienígenas y no a mi la tenemos.' Desaparece de nuevo con un estallido de luz.")
+                                    input()
+
+        case 3:
+            print("""                                                                                              
+ ░░▒▒░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░▒░░░░░░░░ 
+ ░░░░▒░░▒░▒▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒░░░░░░░▒▒▒▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░▒░▒░▒▒░░░░░░░░ 
+ ▒░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒░░  ░░ ░░░░▒▒▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░▒░░░░░░░░░ 
+ ░░░▒░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒░░░░░░░░░░░░▒▒▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░▒░░░▒▒░░░░░░░ 
+ ░░░░░▒▒░▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓███▓▓▓▓▓▓▓▓▓▓▓▒▒░░░░░░░░░░░░▒▒▒▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░▒░░░░░░░ 
+ ░░░▒░▒░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓█ █████▓▓▓▓█▓▓▒▒░░░░░░░░░░░░▒▒▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░▒░░░▒░░░░░░░ 
+ ░▒░▒░▒▒▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓████  ██ █▓▓▓███▓▒░░░░░░░░░░░░░▒▒▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░▒▒░░░░░░░░ 
+ ▒░░▒▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▒ ██  █░ █▓▓▓▓██▓▒░░░░░░░░░░░░▒▒▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░▒░░░▒░░░░░ 
+ ░░░▒▒▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓██▒ ██  █ ████████▒░░░░░░░░░░░░▒▒▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░▒▒░░▒░░░░░░░░ 
+ ░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓█ █  █  █ ██  ████▓▒░░░░░░░░░░░▒▒▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░▒▒░░░░░▒░░░░░ 
+ ░░░▒░▒▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓██ ▓      ░  █████▓▒░░░░░░░░░░░░░▒▒▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░▒▒▒▒▒▒░░▒▒░░░░░░░ 
+ ░░░▒▒▒▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓██  ░░░░░░  ████▒░░░░░░░░░░░░░░░░▒▒▒▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░▒▒░░▒░▒░░░░░░░ 
+ ░░░▒▒░▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓██  ░░░░░ ██░   ░░░░░░░░░░░░░░░░░▒▒▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░▒░▒░░░░░░░░ 
+ ░░▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓██  ░░░░       ░░░░░░░░░░░░░░░░░▒▒▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░▒▒░░▒░░░▒░░░░░░ 
+ ░░░▒▒▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓██░  ░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░▒▒░░▒░░░░░░░░░░░ 
+ ▒░░░▒▒▒▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▒▓▓▓▓██▓░░ ░░░░░░░░░░░░░░░░░░░░░░░░▒▒▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░▒░░░▒░░░░░░░░ 
+ ░▒░▒▒▒▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▒▒▒░░ ░░░░░░░░░░░░░░░░░░░░░░▒▒▒▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░▒░░░▒░░░░░░░░░ 
+ ░░░░░░▒░▒▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▒▒░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░▒░░░▒░░░░░░░░░░░░░░ 
+ ▒░▒░░▒▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▒▒▒▒▒░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░▒▒░░░▒░▒░░░░░░░░░░░░ 
+ ░░░░░░▒▒░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓███▓▓▓▒▒░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░▒▒░░▒░░░░░░░░░░░░░░░░ 
+ ░░░▒░░░▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓██▓▓▒▒░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░▒░░░▒▒░░░░░░░░░░░░░░░░ 
+ ░░░░▒░░▒▒▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓█▓▒▒▒░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░▒░░░▒░▒░░░░░░░░░░░░░░░░ 
+ ▒░░▒░▒░░▒▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▒▓▓▓▒▒▒░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░▒▒▒░▒▒░░░░░░░░░░░░░░░░░░ 
+ ░░░░░░▒░░░▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▒▒▒░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░▒░▒░░░▒▒░░░░░░░░░░░░░░░░░░░ 
+ ░░▒░░░░▒░░▒▒▒░░▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒░▒▒▒▒░▒░░░░░▒░░░░░░░░░░░░░░░░ 
+ ░░░░░░▒░▒▒░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒░░▒░░░░▒░░░░░░░░░░░░░░░░░░░░░░░                                                                             """)
+            print("El coche se detiene en mitad de la marcha, te ves obligado a salir a comprobar el motor y, sin aviso alguno, sin sonido de pisada o forcejeo; un golpe te derriba a un lado. \n \n Incorporándote del suelo puedes ver cómo tu sombra se extiende desde tus pies separándose del suelo en una silueta que intenta atacarte. \n (Pulsa enter) \n")
+            input()
+            print("\n \n Tienes que defenderte, parece ser lo bastante física como para atacarla, pero también una piedra bastante grande en las manos.")
+
+            
+            print("Puedo: \n A. Contraataco con los puños \n B. Le disparo a mi sombra \n C. Intento escapar")
+
+            while True:
+                answer = input("Elijo... ").upper()
+                if answer == "A" or "B" or "C":
+                    match answer:
+                        case "A":
+                            if health >= 4:
+                                health -= 4
+                                print("Es una pelea corta, extraña y encarnizada, la sombra sabe todo lo que vas a hacer y cada puñetazo o patada encuentra una pedrada en mitad de un hueso o articulación. De alguna forma, en algún momento, consigues reducirla hasta que vuelve a ti, pero estás sangrando como solo debería hacerlo un cerdo en la matanza.")
+                                input()
+                                break
+                            else:
+                                print("Lo más probable es que no sobrevivas a una pelea mano a mano, piensa otra cosa")
+                        case "B":
+                            if has_weapon == True:
+                                sanity += 4
+
+                                print("Un combate directo sería terrible, por suerte ahora que estás armado esto es una trivialidad, levantas el arma y conectas tres tiros limpios en el centro de masa de la sombra que se desvanece en el acto derrotada. Te sientes bien contigo mismo.")
+                                input()
+                                break
+                            else:
+                                print("No tengo un arma")
+                        case "C":
+                            sanity -= 3
+
+                            print("Con una patada y algo de suerte vuelves al coche, arrancas y sales a tiempo del sitio, pero puedes ver cómo tu sombra se queda fuera unida por un fino hilo. Para cuando termina volviendo notas que ya no te pertenece como antes, algo ha tomado una centésima parte de tu control sobre ella.")
+                            input()
+                            break
+        case 4:
+            print("""
+█████████████████████████▓█▓▓▓▓▓████████▓███▓▓▒▒▒▓▓▓▓█████████████████▓████▓▓██████████████████████████████████
+███████████████████████████▓▓▓▓▓▓███████▓███▒▒▒▒▒▒▓▓▓████████████████▓▓▓██▓▓▓█████▓████████████████████████████
+█████████████████████████████▓▓▓▓████████▓███▒▒▒▒▒▓▓▓█████████████████▓██▓▓▓▓▓██▓▓█████████████████████████████
+███████████████████████░░▓▓████▓▓███████████▓█▒▒▒▒▓▓▒███████▓███████████▓▒▓▓██▓▓█▓█████████████████████▓███████
+█████████████████████▓▓▓▓▒▒░▓███████████▓██▓█▓▒▒▒▒▒▒▓██████████▓██████▓▓▓███▓▓▓███████▒████████████████████████
+█████▓████▓▓███████████▓▓▓▓▓▓▓▓██████████▓██▓██▒▒▒▒▒▓████████████▓███▓█▓▓██▓██▓██▓▓████▓▓██████▓███████████████
+██████████████████████████▓▓▓▓▓█████▓▓█████▓▓███▒▒▒▒▒▓████▓▓████▓▓██▓▓▓▓███████▓███████████████████████████████
+████████████████▓█▓██████████▓▓███▓████▓▓█▓▓▓█▓▓▒▒▒▒▒▓█████████████▒▒▓▓▓▓███████▓██████████████████████████████
+████████████████████████▓▓████████▓█▓███▓▓██▓█▓▓▓▒▒▒▒▓████▓██████▓▓▓▓▓▓███▓▓▓▓▓▒▒▒█████▓▓▓█▓███████████████████
+██████████████████████▓▓▓▓▓▓▓████████▓▓███▓▓█▓▓▓▓▓▒▒▒▒▒██▓█▓██▓█▒▒▒█▓███▓▓▓▓▓▓▒█▓▓▓▓▓███▓██████████████████████
+██████████████████████▓█▒▓▓▓▓▓▓▓█████▓█▓▓██▓▓█▓▓▓█░▒▒▒▒██▓██▓██▒▒▓▓██▓▓▓▓▓▓▓██▒▓▓▓▓▓█▓█████████████████▓▓▓▓▓▓██
+███████████████████████████▓▓█▓▓▓▓▓███████▒██▓▓▓▓▓▓░▒▒▒▒█████▓▒▒▓██▓▓▓▓▓▓▓▓█▓▓█▓▓██████████████▓▓▓▓▓███████████
+█████████████▓██████████████████████▓▓▓▓██▓▓▓██▓█▓▓▒░░▒▒▒▓██▒▒▓██▓▓▓▓█▓██▓▓▓██████████▓▓▓█▓████████████████████
+████████████████████▓▓▓████████████████▒▒▒▓██▓▓▓▓▒▓▒░░░░▒░█▒▓▓▓▒▓▓█▓▓█▓▓▓█▓▓░▒▓██▓▓▒████████▓██████████████████
+██████████████████████▓▓▒▒▒▒▓▓▓▓███████████▒▒▒▓█▓▓▒▒▒░░░░░░░░▒▒▓░░░░░░░░░░░░░░▓▓▓▓▓▓█████████▓▓▓▓▓▓▒▒▒▒▒▒▒▓▓███
+████████████████████▓▓▓▓▓████████████▓▒▓▓▓▓▓███▓▒▓▓▒▒▒░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▓▓███████▓▓▒██▓▓▓▓██████▒
+███████████████████████████████████████████████▓▒▒▓▓▒░░░░░░░░░░░▒▒▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▒▒░▒▓█▓▓▓██▓██████▒█████
+████████████████████████████████████▓▓▓▓▓▓▓▓▓▓▒▒▓▓▓▓▓░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒███████████████████████
+███████████████████████████▓▓▓▓▓▓▓▓███████▓▓▓▓▓▒▓▓▓▓░░░▒▓░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓███▓▓██▓▓▓███████▓██████
+██████████▓▓▓▓▓▓▓█▓▓█▓▒▓▒▒▒▓████████▓▓▓▓▓▓▒▓▓▓▓▓▓▓▓░░░░▒▒█▒▒▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▒▒▒▒▒▒▓████▓█████▒███████████████
+███████████████████████████████████▓▓▓▒██▓▓▓▒█▓▓▓▓░░░░░░▒▒▓▓▒▒▓▒▒▒▓▒▓▒▒▓▒▒▒▓▒▒▒▓▒▒▓▓██▓▓██▓█▓▒███▒█████████████
+████████████████████████████████▓▒▓██▓▓█▓▒█▓▓▓▓▓▓░░░░░░░▓▒▒▓█▒▓▒▓▒▓▒▒▓▓▒▓▒▒▓▓▒▒▒▒▓██▓▓██▓█▓████████████████████
+███████████████████████████▓▒▓████▓▓▓▓▒███▓█▓▓▓▓░░░░░░░░░▒▒▒▓█▓▒▓▒▓▒▒▓▒▒▓▒▒▒▓▒▓▓██▓▓▓███▓████▒█▓███████████████
+██████████████████████▓▒▓█████████▓▒███▓▓█▓██▓░░░░░░░░░░░▓▒▒▒▓██▒▒▒▒▓▒▒▒▒▒▒▓▒████▓███▓██████▓▓▓███████▓████████
+█████████████████▓▓▓▓██████████▓▒████▓██▒█▓▓▓░░░░░░░░░░▒░▓▓▒▒▒▒██▒▒▒▒▒▒▓▒▒▓██▓▓███▓▓█████▓█████████████████████
+████████████▓▓▓▓████████████▓▒█████▒██▓█▓█▓▓░░░░░░░░░░░▒░░▓▓▒▒▒▒██▓▒▒▓▒▒▓▓█▒████░████████▓█████▒██▓████████████
+████████▓████████████████▓▒██████▓██▓███▓▓▓░░░░░░░░░░░▒▒▒▒▓▓▒▒▒▒░███▒▒▒▓▓▓████▓▓▓███▓▓█░███████▒███████████▓███
+██████████████████████▓▒██████▓▓██▓██▓█▓▓░░░░░░░░░░░░▒▒▒▒▒▒▓▓░░▓▓████▒▒██▓████▓███▓▓█▒█████████████████▓███████
+███████████████████▓▓▓██████▒████▓█▓█▓▓▓░░░░░░░░░░░▒▒▒▒▒▒▒▒▓▓▒░░▒▒▓███▓████▓██████▓█████▒██▓▓██████████▒█████▓█
+████████████████▓▓████████▓████▓████▒▓▓░░░░░░░░▒▒▒▓▓▒▒▒░▒▒▒▓▓▓░░░▒▓▓▓▓█▓██████▓███████████▓█▓████████▒█████████
+█████████████▓▓████████▓▓████▓██▓█▓█▓▒░▓░░▒▒▓▒▓▒▒▒▒▓▓▓▒▓▒▒▒▒▓█▒░░▒▓▓▓▓█▓▓▓███▓█████████▓███████████▒▓██████████
+██████████▓▓█████████▓▓████▓██▓██▒▓▓▓▓▒▓▒▓▓▒▒▒▒▓▒▒▓▓▓▓▓▓▓▓▓▒▓██▒▒▓▓█▓▒▓█▓▓▓█▓██████████████████████████████████
+████████▓██████████▓█████▓███▓█▓█▓▓█▒▒▒▒▒▓▓▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▒▓▓█▓▓▒▒▒▒▒▒██▓▓▓█████▒█████████████████████████████
+█████████████████▓█████▓███▓██▒▓▓▓█▓██▓▒▒█▓▒▒▓▓▒▒▒▓▓▓▓▓▓▓▓▒█▒▓██▒▓▓▓█████████▓██████████████▓█████▓██████████▓█
+█████████████████████▓██████▓██▓███▓█▒█▓▓█▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█▓▓███▒▓▒▒░▓▒▓█████████████████████▓████████████████
+███████████████████████████▓▓▓▒▓██▓▓▓███▓▓▓▓▓▓▓█▓▓██▓▓▓▓▓▓▓█▓████▓██▓▓▓██▓▓█████▓██████████████████▓▓▓█████████
+██████████████████████▓█████▓▓██▓█████▓▓▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████████▓▓▓▓▓▓▓▓▓▓███████████████████▓▓██████████████
+████████████████████████▓█▓▓▓██████▓█▓█▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█▓████▒▒▒▒▒▒▓▓▓▓▓██████████████▓▓▓█████████████▓███
+███████████████████████▓▓█▓████▓▓▓▓▓██▓█▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██████░▓▒▒▒▒▓▓▓▓▓█████████▓▓▓█████████████▓███████
+█████████████████████▓██▓▓████▓███▓█▓█▓▓▓▓▓▓▓▓██▓▓█▓▓█▓▓▓█▓██▓█████▓▓▓█████▓▒▒▓███▓▓▓▓█████████████▓███████████
+            """)
+            print("Mientras avanzas por la ciudad los edificios empiezan a retorcerse, a envolverte, poco a poco no puedes ver más que un laberinto de ventanas por el que circulas sin saber del todo a dónde vas \n \n Poco a poco te das cuenta de que en cada ventana hay una cara, cientos, miles, millones, todas mirándote \n (Pulsa enter) \n")
+            input()
+            print("Entre todas las caras hay un espacio vacío, una cara que no esta en su sitio.")
+
+            print("Puedo: \n A. Me concentro en la cara que falta \n B. Intento no mirar y esperar a que pase \n C. Intento escapar")
+
+            while True:
+                answer = input("Elijo... ").upper()
+                if answer == "A" or "B" or "C":
+                    match answer:
+                        case "A":
+                            if sanity >= 2:
+                                sanity -= 2
+                                lila_tracker += 2
+                                print("Hay caras que lloran, caras que ríen, caras que se mantienen impasibles, pero la que falta es distinta, su ausencia dibuja un hueco perfecto en los surcos de tu mente como si de estar, de verla, pudiese llenar un espacio que ha quedado vacío \n \n.")
+                                input("Entonces te das cuenta.")
+                                print("\n \n La cara que falta es la clave del misterio.")
+                                input()
+                                break
+                            else:
+                                print("No, de ninguna forma tienes la fuerza de voluntad para mirar esa ventana vacía")
+                        case "B":
+                            print("Te concentras, aprietas los dientes, hundes la cabeza en el volante mirando la alfombrilla hasta que sientes el aire volver a la normalidad, las sombras, susurros y ecos de caras riendo y llorando desvanecerse. Esta vez has sobrevivido.")
+                            input()
+                            break
+                        case "C":
+                            if fuel >= 2:
+                                fuel -= 2
+                                sanity -= 2
+                                lila_tracker -= 2
+                                print("Las ruedas rujen arañando el asfalto, vas a toda velocidad contra el muro de caras que se expanden junto a una luz mortecina envolviéndote, y consigues romperlo saliendo al exterior. Estás en el mismo sitio que al principio, tu parachoques no tiene ni un rasguño.")
+                                input()
+                                break
+                            else:
+                                print("No tengo suficiente combustible como para salir corriendo ahora")
+        case 5:
+            print("Avanzas con el coche hasta dar con una intersección, hay cosa de veinte coches, todos quietos bloqueando el camino en doble fila, todos con asientos vacíos. Conforme das una vuelta buscando cómo quitarlos te das cuenta de que las puertas están abiertas, los interiores llenos de cosas, abrigos, sombreros, carteras, maletines; volantes aún calientes, asientos donde la señal de alguien sentado todavía no se ha desvanecido. \n (Pulsa enter) \n")
+            input()
+            print("\n \n Como un rapto, toda esta gente ha desaparecido. Un silbido rítmico, musical, te alcanza; alguna parte de tu cabeza te dice que estás en peligro.")
+            input()
+
+            print("\n \n Puedo: \n A. Esconderte entre los coches \n B. Esperar a ver qué viene \n C. Volver al coche y abrirse paso a golpes")
+
+            while True:
+                answer = input("Elijo... ").upper()
+                if answer == "A" or "B" or "C":
+                    match answer:
+                        case "A":
+                            lila_tracker += 2
+
+                            print("\n \n Escuchas pasos en la calzada, por mucho que te hundas en el fondo del coche no parece suficiente. '¿Recuerdas cómo has llegado aquí?' de alguna forma sabes que te habla a ti incluso si no puedes verla, la voz tan amable, tan fría, tan cruel. 'Supongo que no, no me importa hacer esto cien veces más para encontrarte. ¿Qué son diez o quince personas para mi?'.")
+                            input("\n \n Pulsa enter para aguantar la respiración.")
+                            print("\n \n'Estoy bastante decepcionada, pensaba que lo habrías resuelto todo a estas alturas.' Hay un golpe seco fuera del coche, como si alguien acabase de poner las manos en la ventanilla, como si la chica estuviese mirando dentro ahora mismo. 'Das mucha pena hay dentro, no vas a darte la vuelta para verme ¿No?'")
+                            input("\n \n Pulsa enter para intentar no darte la vuelta.")
+                            print("\n \n Escuchas las manos deslizarse, pisadas que se alejan, pasada media hora te atreves a salir y todo está vacío, hay un camino abierto entre los coches solo para ti.")
+                            input()
+                            break
+
+                        case "B":
+                            lila_tracker += 4
+                            sanity -= 3
+                            health -= 2
+
+                            print("\n \n Inmediatamente sabes que esta ha sido una mala idea, la peor de las ideas, puedes ver perfectamente cómo se acerca a lo lejos la chica. No tiene una forma clara, ni siquiera parece estar en este mundo, es más bien como un agujero practicado directamente en tus sentidos, una ausencia que deja vislumbrar dónde está.")
+                            input("\n \n Pulsa enter para intentar no temblar.")
+                            print("\n \n No sirve de nada, estás aterrorizado, este miedo es tuyo, pero no recuerdas de dónde viene. '¿Te has rendido ya? No, no creo, no lo entiendes todo todavía.' Suena como cuchillos, fríos, dulces y afilados que se te clavan en las orejas 'No puedes volver hasta que hayas terminado de entender qué soy, pero no puedes escapar sin saberlo. Que mala suerte.'")
+                            input("\n \n Pulsa enter para intentar no perder el conocimiento.")
+                            print("\n \n Todo da vueltas, está tan cerca que su forma bloquea tu campo de visión con una nube de estática imposible, te sientes extraño en tu propia piel. No consigues entender lo siguiente que dice, pero cuando despiertas sabes que ahora está mucho más cerca de atraparte, que tu dolor de cabeza, que los cortes que cubren tu cara no son buena señal.")
+                            input()
+                            break
+
+                        case "C":
+                            if fuel >= 2:
+                                fuel -= 2
+                                sanity += 2
+                                lila_tracker -= 1
+                                print("\n \n El motor tiembla, pisas el acelerador hasta que casi cruje y el coche choca con el resto empujándolos a los lados en una nube de chispas. Para cuando la chica amenaza con manifestarse ya te has alejado más que suficiente como para que no pueda alcanzarte.")
+                                input()
+                                break
+                            else:
+                                print("No tengo suficiente combustible como para salir corriendo ahora")
+
+    # Aquí terminan los encuentros
+
+    on_player_movement()
+# Encuentros específicos para sitios especiales, los necesarios para avanzar en el juego
+
+def special_location_update():
+    global locations
+    global locationsCopy
+
+    locationsCopy.remove(coordinates_player)
+    locations = locationsCopy
+
+def on_special_location():
+    os.system("cls")
+
+    global food
+    global health
+    global fuel
+    global sanity
+    global lila_tracker
+    global has_weapon
+
+    match (random.randint(0, 3)):
+        case 0:
+            print("""
+████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
+████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
+████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
+████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
+████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
+████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
+▒██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▓
+▓██▓▒▒████████████████████████████████████████████████████████████████████████████████████████████████████████████▒▓▒███
+▓▓▓█▓▓▓█▓▓▒██████████████████████████████████████████████████████████████████████████████████████████████████▒▒▓██▓█████
+▓▓▓▓▓▓█▓█████▓▒▒████████████████████████████████████████████████████████████████████████████████████████▓▒▓█████████████
+▓▓▓▓█▓▓▓████▒██████▒▓██████████████████████████████████████████████████████████████████████████████▒▒███████████████████
+▓▓▓██▒▒██████▒██████████▓▒▓███████████████████████████████████████████████████████████████████▒█████████████████████████
+██▓██▓██████▓▒███████████████▓▒██████████████████████████████████████████████████████████▒▓█████▓███████████████████████
+▓█████▓█▒▓█▒▒▒▒▒▓▓▓▓▓██████████████▒████████████████████████████████████████████████▒███████████▓███████████████████████
+████████████▒▒░░▒▒▒▒▓████▓█████▓▓▒██████▓██████████████████████████████████████▒██████████████████████████████████████▓█
+████████████▒▒▒██▓▒░▒████▓████████████████████████████████████████████████▓██████▒▒▒█████████████████████████▓███▓▓▓▓▒▓▓
+████████████▒▒░▓▓▓▓░▒████▓████████░░▒█▒▒▒▒██████████████████████████████████████████████████████▓███████▓▓▓▓▓▓▓▓▒▓▓▓▓▓▓▓
+████████████▒▒▒▓▓▓▓░▒████▓████████░░█▒░░▓░████████████████████████████████▓▓█████████████████████▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+████████████▒▒▒▓▓▓▓░▒████▓████████░░▓▓░░▓░████████████████████████████████▓███████▓▓▓▓▓▓▓▒▒▒▒███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒
+████████████▒▒▒▓▓▓▓░▓████▓████████████░░▓▒█████████████████▓▓████████████▓▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒░▒███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▓
+████████████▒▒▒▓▓▓▓░▒▓▓▓▓▓▓▓▓▓▓▓▓▓████░░▒▒█████████████▓███▓▓███▓████████▓▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒░▒▓██▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+█▓▓▓▓▓▓▓▓▓▓▓▒▒▒▓▓▓▓░▒▓▓▓▓▓▓▓▓▓▓▓██████░░░░███████████████████████████████▓▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▓██▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▒▒░▓▓▓▓░▒▓▓▓▓▓▓▓▓▓███████▓░░░░██▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▓██▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▒▒░░░░▒█▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█░░░▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒░▒▓██▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▒▒░░░░░░▒▓▓▓▓▓▓█▓▓▓▓▓▓▓█▓▓▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒░▓▓█▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▒▒░░░░░░▒▓▓▓▓▓▓█▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▓▓█▓▓▓▓▓▓▓▓▓▓▒▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▒▒░░░░░░▒▓▓▓▓▓▓██▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▓██▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▒▒░░░░░░▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒░▓▓█▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▒▒░░░░░░▒▓▓▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▓▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▒▒░░░░░░▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▒▒░░░░▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▒▒░▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▒▒▓▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▓▓▓
+▓▓▓▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▓▓▓▓▓▓▓▓▒▓▓▓
+▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▓▓▓▓▓▒▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▓▓▒▒▒▒▒▒▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒
+""")
+
+            print(f"Alcanzas lo que parece ser una vieja escuela, de alguna forma te resulta familiar, pero también sabes que no has estudiado aquí. Entras y no hay nada más que polvo, taquillas rotas hondeando en pasillos a oscuras y aulas vacías, la linterna hace que todo parezca un monstruo con cada pasada. \n \n Mientras revisas la salas buscando alguna pista das con una donde en la pizarra está escrito '{name_player}'. \n Pulsa enter para seguir: ")
+            input()
+            print("Empiezas a sentirte incómodo en tu propia piel. '¿Por qué está escrito aquí? ¿Quién lo ha escrito?' Luego susurros, rebotan entre las paredes casi inaudibles, te guían lentamente a un sótano. En mitad del suelo hay un cuerpo que debe llevar muerto décadas, la ropa irreconocible, no puedes distinguir siquiera si era un hombre o una mujer")
+            input()
+
+            os.system("cls")
+
+            print("Esto podría ser una pista, tienes que investigarlo: \n \n A. Revisar el cuerpo \n B. Revisar los alrededores \n C. He visto suficiente")
+
+            while True:
+                    answer = input("Elijo... ").upper()
+                    if answer == "A" or "B" or "C":
+                        match answer:
+                            case "A":
+                                print("Es poco más que huesos cubiertos en moho y polvo a estas alturas, dándole vueltas encuentras que tenía un taladro debajo y que posiblemente haya muerto por una trepanación. Una autoinfligida, aquí. ¿Por qué iba a intentar abrirse la cabeza a solas?")
+                            case "B":
+                                print("Hay posters en el sótano, libros, algún documento antiguo, pero todos están, por algún motivo, en blanco o distorsionados hasta tal punto que no se puede distinguir la información. Como si alguien lo hubiese borrado todo o casi como si hubieran 'devorado' el contenido.")
+                            case "C":
+                                print("He visto suficiente de momento")
+                                input()
+                                break
+
+            print("Aunque no lo haya aclarado todo, esto puede tener sentido con algo de contexto.")
+            special_location_update()
+            input()
+
+        case 1:
+            print("""                                                                                                                  
+████████████████████████████████████████████████████▓▓▓▓█▓▓▓▓▓▓▓▓▓█████▓▓▓▓▓▓▓▓█▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+██████████████████████████████████████████████████████████▓▓▓▓▓▓▓▓▓███████▓▓▓▓▓█▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+█████████████████████████████████████████████████████████████▓▓▓█▓▓▓███████░░░▒▒░░▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+█████████████████████████████████████████████████████████████▓▓▓▓▓▓▓▓████▓░░░░▒███░▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+█████████████████████████████████████████████████████████████▓▓▓▓▓▓▓▓█▓▓▓▓░░░▒▒███░▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+███████████████████████████████████████████████████████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░▒██████░▓▓▓▓█▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+███████████████████████████████████████████████████████████▓▓█▓▓▓▓▓▓▓▓▓░░░▒▒▓███████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+█████████████████████████████████▓████████████░█████████████▓▓▓▓▓▓▓▓░▒▒▒▓▒░▒▒███░▒█████▓▓▓▓▓▓▓▓▒░▒██▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+████████████████████████████████▒█████████▓▒▓▓█████▓▓▓██████▒█▓▓▓▒▓▓▒▓▓▒ ░▒▒▓██▒▒██▓████▒░ ░░▒▒▒▒▒▒███▓▓▓▓▓▓▓▓▓░▓▓▓▓▓▓▓▓
+████████████████████████████████▒███████░░▒▒▓███████▒▓▓▓███▓██▒▒▓▓▓▓░█░░░░▒▓▓██▒▓██▓▒▒██░▒▒░░▒▒▒▒██████▒▓▓▓▓▓▓▓▓█▓▓▓▓▓▓▓
+████████████████████████████████▓███▒░▒▒▒▒▒▒▓███████████▓▓▒▓▓█▓▓▓░░░▒▒▒▓▒▓▓▓▓██▒▒███▓▓▓░░▒▒▒▒▒▒▒▒█████████▓▓▓▓░░▒█▓▓▓▓▓▓
+██████████████████████████████████░▒▒▒▒▒▒▓▓▓▓▓▓▓█▓███████▓▓▒▒█ █▓░░▓█▓▒▓█▓▒▓▓██▒▒███ ▒▒▒▒▒▒▒ ░ ░░░▒▒▒▓▓██████░░▒▓█▓▓▓▓▓▓
+██████████████████████████████░▓▒▒▒▒▒▒▒▒▒▒▒▒░▒▒░▓▓██████▓▓▒░██ ▒▓▓▓███▓▒░░▓▒▓░▒▒▒ ░▒▒▒▒▒ ░░░░░  ░░▒▒▒▓██████▓░░░██▓▓▓▓▓▓
+███████████████████████████░▒▓▓▓░▒▒▒▒▒▒▒▒░▒▒▒▒▒▒▒▒██████▓▒▒░██▓░▓▓▓▓█░ ░ ░▓▓▒▒▒▒▒░░▓░ ░░░░░░░░░ ░▒▓█▒▒▓█████▓░░░██▓▓▓▓▓▓
+████████████▒▓████▓█████▒▓▓▓▒▓▓▒▒░░░░░░░░▒▓▓████▒███████▓▒░▒██▓▓▓░ ░  ░▒▒▓▓▒▒▓▒▓▒ ░░░░░░░░░░░░░░░░▒▒▒███████▓▒░░████▓▓▓▓
+████████████▒▓██████▒▓▓▓▒▒▒▒▒▓▓▒▒▒░ ░░▓▓▒▒▒█████████████▓▒░▒██▓▓▓▒▒░░▒▒▓██▓▓▓▒▓▓▓░░▒░░░░▒░░▒▒▒░▒▒▓██████████▓▒░░█████▒▓▓
+████████████▒▓████▒▓▓▓▓▒▒▒▓▓▒▓▓▒▒░▒▒▒▓▓▒░░▒▒▓▓▓▒░███████▓▒░███▓▓▓▒▒▒▒▒▒▒▓▓▓▓▓▓▒▓▓▒░░░░▒▒▓▓▒▒▒▒░▒▓▓██████████▒▒░░▓███████
+███████████▓▒████▓▓▓▓▓▒▓▒▒▓▓▓▓▒░▒▒▓▒░░▒▒░▒▒▒▒▒▒██▓░█████▓▒▒███▓▓▒▒▒░░░▒█▓▓██▓▓▓▓▒░░▒▒▒▒▒▓▒▒▒ ▒▒▒▒▒▓████▒█████▒░░████████
+██████████▒▓▓████▒▓▓▓▓▒▒▒▒▒▒▒░▒░▓░░▒░▒▒░▒▒▒▒▓▓█▓▓░██████▓▒▒███▓▒  ▒▒░░░▓▓▓▒█▓▒▓▓▒░░▓▓▓▓░░▒▒▒░▒▒▒▒▒▓▓████▓████▓▒░▓███████
+███████▒░▒░▒▓███▒▒▓▓▓▒▒▒▒▓▓▒▒▒▒░░░▒▒▒░▒░░░▒▒▒▒▓████████▓▓▒░██▓▒▒▒░░░▒▒ █▓▓█▓░░░▒▒░▒░░░▒▒░▒░▒▒▒▒▒▓▓████▓██████▓▒░▒███████
+████▒▒▒▒▒▒▒▒███▒▒▒▓▓░▒▒▒▒▓▓▒▒▒▒▒░▒░▒░░▒▒▒▒███████▒█████▓▒▒░██▓▒▒▒░ ░░░░█▓██▒░░░▒▒░░░░░░░▒▒░▒▒▒ ░░░▒▒░▒▒██████▓▒░▒███████
+██▒▒▒▒░ ░░▓▓██▒▒▒▒  ▒▓▓▒▓▒▓▓▓▓░▒▒▒▒▓▓▓▒░▒▒░░████████████▒▒░██▒▒▒░░░░░░ ▓███▒▒██▓▒▒░░░░▒▒░░▒░▒▒░▒▒████████████▓▒░▒▓██████
+██▒ ░░░░░▒▒██▒▒▒▒▒░░▒▒▒▒▓▓▓▒█▒░▓▓▓▓▓▓ ░░░░▒▒▒█▓█▒▒██████▒▓▒██▓▒▒░░░░ ░▒▓███████▓▓▒░░░░░▒▒▒▒▒▒▒▒▒▒████████████▒▒▒▒███████
+█░░░░░▓░░▒▒▓▓▒▒▒▒▓▒▓▓▒▒▒▓██▒▒▒░▓▓░ ░▒░▒░░▒▒▒▓█▓█▓▒██████▒▓▓███▒░░▒▒▒▒░░█████▓█▓▒▒░░▒▒▓▒▒▓▒▒▓░░░░▒▓░▓▓░█▓░█████▓▒▒▓██████
+█░░░░░▒▓ ▓▒▓▓▒▓▒▒▓▓▓▒▓▓███▓▓▒░ ░░░░░░░▒░▒▒▒▓▓█▓█░▒██████▒▓▓▓▒█▒▓▒▒░▒▒▒░████▓▒░▒▓▒░▒▒▒▓▒░░░░▓░▒▓░▓▓░▓▒░████████▓▒▒███████
+▓░▒▓▓▓▒▒░▓▒▓▓▓▒▒▒▓▓▓██▓███▓▒▒░░░░░░░░░░▓▓▓▓▓▓▓░░▒▒██████▓▓▓▓▒█▒▓▒▒ ░░░░████▓▒▒▒▓▒░▓░░░▒░▒░░▓▒▓▓░▓▓░█▒░▓██▓████▓▒▒▓██████
+▒▒▒▓▒▒▒▒▒▒▓▓▓▒▒▒▓ ░████████▓▒░░░░░░▒▓▓▓▓█████████░█████▓▒▒█▒░▓▒░░░░░░░░████▓▒▒▓▒▒░░░▓░▓▒▓▒░▓▒▒▒░░░░▒▓▒██▒▒████▓▒▒▓██████
+▒▒▒▒▒▒▒░▓▓▓▓▓▓▒▓▒░░██▒██▓▓█▒▒░░░▒▒▒▓▓▒░▓▓▓███▓██████████▒▒█▒▓▓▒░░░░░░ ▒████▓██▓▒▓▒▒▒▓░▓▒▓▒░░░▒▓▓▓▒██████▓█████▓░▒▒▒█████
+▒▒▒▒░▒▒▒▓▓▓▓▓▓▒▓▓▓▓▓█▓▒▒▓▓▒▒░░▓▒▒▒▒▒▓▓▓▓▓▓▓▓████▓███████▓▒▓▒▓░▓░░ ░░░░░███████▒▒▒▓▓▓▓░░░▒▒▒▒▓▒▓▒▓▓████████████▓▒▒▓▒█████
+▓▓░░░▒░▒▒▒▒▒▒▒▒▓▓█▒░░░▓█▓▓▒▒░▒▒▒▒▒▒▒▒▒▒▒▓████▓▒█▓███████▓▒▓▒░▒▒░░░░░░░████████▒▒▒░░▒▓▒▓▒▓▒▓▒▒▒▒░ ░░░░░░███████▓▒▒▒▒█████
+░▒▒▒▒▓▒▒▒▒▒▒░░░░░░░░░▒███▓░░░▒▒▒▒▒▒▒▓▓██████▓▓██████████▒▒▒▒▒▒▒▒▒░░  ░▓████▓░░▒▒░░▒▓▓▓▓▓▓░▒░ ░░░░░░░▒▒░▒░▒ ░██▓▒░▒▒█████
+▒▒▒░▒▒▒▒▒▒▒▒▒▒░░░▒░░░░████▒▒░▒▒░▒▓▓▒▓▒▓▓█████▒█████████▓▓▒▒▒▒▒░  ░░░░░██████░▒▒▓░░▒▒░▒▒▒▒▒▒▒ ░░░░░▒▒▒▒░▒░▒▒▒░  ▒▒░▒█████
+▒▒▓▒▒▒▒▒▒▒▒▒▒░░▒▓░░░░▒█▓██▒▒▓▓▒▒▓▒▓▓▓▓▓████████████████░▒▓▒▒▒▒░░░░░░░░██████░░▒▒░▒▒▒▒▒▒▒▒▒▒▒▒░▒▒▒▒▒▓▒▓░▓░▒▒▓▒▒▓░  ░█████
+▒▒▒▒▒▓▒▒▒▒▒▒▒░▓▓░░░░░██▒██▒░▓▒▒▒▒▓▒▓▓        ██████████▒▒▒▒░▒▒░░░░░ ░░████████▒▒▒░ ░░▒▓▓▓▒▒▓▒░ ░▒░░░░▒▒░▒▓▒▓▒█▓░▓▒░▒████
+░▓░░▒▒▒▒▒▒▒▒░░░░░░░░░▓██▓▒▒░▒▓▒▒▒▒▒ ░  ░░░░░░░░ ░██████▒▒▓▒░░▒ ░░░░ ░░████████▒▒▒░░▒▒▓▓▒   ░░▒▓▓▓▓▓████████░▒██░▓▒▒▒████
+▒▒▒▓ ▒▒▒▒▒▒▒░░░░▓▓▓█▓██▓▓▒░░▒▒▒▒▒▒▒ ░ ░░▒░▓▒░ ░░░░  ░█▓▒▒▒▒░▒░▒░░░░░  ████████▒▒▒░▒▒▓▓▓▓░░░░▒▒▒▓▒▓████████████░░▒▒▓░████
+▒▒░░▒▒▓▒▒▒▒░▒▓▒░█▓▓▓█▓█▓▒░░░▒▒▒▒▒░▒ ▒░▒▒▓▓▓░░ ▒░░ ░ ░   ░░▒░▒░▒▒░░  ░░█████▒░▒▒▒▒▒▒▒▓▓▓▓░░░▓▒▒░ ░░░░▒▒ ░▒████████ ▓░████
+▓▒▓▒▒▓▒▒▒▒▒░▓▒░░▓▓▓▓▓▓▓██▒░    ▒▒▒░ ▓░▒▒▒▒░██▒▓▒▒░░░     ░░▒▒░   ░░░░░█████░ ░▒▒▒▒▒▓▓▓▓░▓▓▓▓  ░░░░░░▒░░██░▒ ██████░▒████
+▒▒▒▒▒▒▒▒▒▒▒▒▓▒ ▓▓▓▓▓█▓██▓▒░ ░▒▒▓▒░░▓▓▓▓████████▒▒░▒░░░  ░░▒▒▒▒ ░░░░░░░████▓░░░▒▒░▒▒▓▓▓▓▓███▓ ░░░░░▒░▓▒░▓▓░▓▓█▒ ████▒████
+""")
+            
+            print("\n El siguiente sitio es un edificio de pisos, parece un bloque de comunista completamente fuera de sitio en mitad de la ciudad, la gente se mueve ignorándolo, nadie mira en su dirección, los coches no entran en las calles que lo rodean. Conforme te acercas puedes ver que todo parece estar suspendido, las calles están como nuevas y las farolas alumbran con luces completamente desfasadas. \n \n Si el tiempo está congelado aquí de alguna forma, quizás haya alguna pista que no exista en el presente. \n Pulsa enter para seguir: ")
+            input()
+            print("\n \n Puedes entrar sin problemas, la puerta no tiene cerrojo, las escaleras están limpias, los suelos encerados, las paredes perfectamente conservadas - pasar un dedo por cualquier superficie demuestra que no hay polvo en niguna parte -; un silencio absoluto envuelve todo. Solo lo rompe el zumbido de un frigorífico en la tercera planta.")
+            input()
+            print("\n \n Entras tranquilamente, no hay peligro a la vista, este sitio es cómodo, agradable, familiar, dentro del apartamento sabes instintivamente dónde está todo casi como si hubiese sido tuyo en algún momento. Solo que eso sería imposible, tienes tiempo para revisarlo todo y, de paso, llevarte lo que puedas de dentro.")
+
+            os.system("cls")
+
+            food += 5
+            fuel += 5
+            sanity += 3
+
+            print("Encuentras comida, combustible y consigues relajarte un poco, pero también tienes que mirar: \n \n A. Revisar el cuarto \n B. Revisar el baño \n C. Revisar los muebles \n D. Irse")
+
+            while True:
+                    answer = input("Elijo... ").upper()
+                    if answer == "A" or "B" or "C" or "D":
+                        match answer:
+                            case "A":
+                                print("\n \n Tanto la cama como el armario están bien recogidos, no hay señales de que nadie haya estado aquí desde hace tiempo, pero tampoco parece abandonado. La ropa que hay dentro es formal con trajes, camisas y pantalones altos, no hay libros o revistas. \n \n En los cajones hay varios cuadernos escondidos en un doble fondo, describen alguna clase de 'criatura' en una sala de calderas y parecen dar vueltas de manera obsesiva al nombre de una mujer, un nombre que no es legible.")
+                            case "B":
+                                print("\n \n Dentro del armarito de medicinas hay una extensa colección de medicinas, la mayoría calmantes y opiáceos, todo apunta al cuadro de una persona que intenta evidarse o sufre de intensos dolores y depende de paliantes. También, combinando todo, sería posible provocarse lagunas en la memoria.")
+                            case "C":
+                                print("\n \n Buscando por los armarios no encuentras mucho, aparte de una pistola escondida junto con unas cuantas balas y varias marcas practicadas en la madera, líneas en grupos de cuatro, algunas tachadas.")
+
+                                if (has_weapon == False):
+                                    has_weapon = True
+                                    print("\n \n Ya que nadie va a necesitarla, me quedaré con el arma.")
+
+                                else:
+                                    print("\n \n Vendría bien si no tuviese ya un arma.")
+
+                                input()
+                            case "D":
+                                print("\n \n He encontrado todo lo que necesito aquí dentro.")
+                                break
+
+            print("Todo apunta a que quien estaba aquí estaba sufriendo algo parecido a lo que me está pasando a mi, la estásis de su piso es mala señal, pero si sigue vivo quizás yo también puedo conseguirlo.")
+
+            special_location_update()
+
+            input()
+
+        case 2:
+            print("""
+████████████▓▓▓▓▓██▓▓▒▒▒▓██████████████████▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒░░░░░░░░▓▓▓▓▓▓▓▓▒▒░▒▒▓▓▓▓▓▓▒░░░░░░░░░░░░░░░░▒▓▓▓░░░░
+█████████████████████▓▓████████████████████▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░▒▒▓██▓▓▓▓▓██▓▓▓▓▓████▓▒░░░░░░░░░░░░░░░▒▓▓▒▒░░░
+█████████████████████▓▓█████████████████████▓▓▓▓▒▒▒▓▓▓▓▓▓▒▒▒▒▒▒░░░▒▓██▓▓▒▒▒▓▓▓▓▓▓▓█████▓░░░░░░░░░░░░░░░▒▒▓▓▒▒▒░
+██████████▓███████████▓██████████████████████▓▓▓▓▓▓██▓▓██▓▓▓▓▓▒▒▒▒▒▓▓▓▓▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓█▓▓░░░░░░░░░░░▒▒▓▓▓▓█▓▓▓
+████████▓▓▓▓█▓▓████████████████▓▓▓▓▓█▒░░▒████▓▓▓▓▓▓█▓▓▓▓▓████▓▓▒▒▒▒▒▒▒░░░░░░░░░▒▒▒░░░░▒▒▒▓▓▓▓▓▒▒▒▒▒▒▒▓▓▓▓▓███▓▓
+███████████████████████████████▓▓▓▓▓▓░░░▒████▓▓▓▓███▓▓▓▒███▓▓▓▓▒░░░░░░░░░░░░░░░░░░░░░░░░▒▒▓▓▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+███████████████████████████████████████████████████████░██▓▒▓▓▒░░░░░░░░░░░░░░░░░░░░░░░░░▒████▒▒▒▓▓▓▓▓▓▓███▓▓▓▓█
+██████████████████████████████████████████████████████▓▒█▓▓▒▒█▓▒░░░▒▒░░░░░▒▓▒▒░░▒▒▒▒░▒▒▒▓███████▓▓▓▓▓▓▓██▓▓▓▓▓▓
+█████████████████████████████████████████████████████▒░▒██▓▓▒▒▓▓▓▓▓▓▒▒▒▒▒██▓█▓▓▓▓██████████████████████████▓███
+█████████████████████████████████████████████████████░▒▓▒█▓▒▒▒▒▓▓█▓▓▓▒░▓█▒▒▒███████████████████████████████████
+█████████████████████████████████████████████████▓█▓░░▒▒░▒▒▓▓▒▒█▒▒▒▓▓▓▓▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███████████████████
+███████████████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░▒▒▒▒▒▒▒▓▓▓███▓▒▒▒▓█▓▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▓█▒▒█▓▓▓▓▒▒▒▓█▓▓▒▒░▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒█░░▒▓▒▒▓▒▓▓▒▒▓▓▓▓▓▓▓▒▒░░░▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒░░▒▒▓░░░▓▒▓▓░▒▓▓█▓▓▓▓██▓▒▒▒▒▒░▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒░░▒▒█▓▒▒▒█▓▒░░▒▓████▓▒████▓▒▒▒░░▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒░░░▒▒░▒▓▒▓█▒█▒▓▓▓▓▒▓███▓▓▓▓▒▒▒▒▒▒░░▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░▒▒▒░▓▓█▒████▓▓██▓▒▒▒▒▓▓▓▓▓▒▒▒▒▒░▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒░░░░▒▒▒░░░▒▒▒▒▒███▓▓▒▒▒▒▒▒▓███▓▒▓▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░▒▓▓▓▒░░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓█▓▓▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+█▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░▒▒▓██░░░▒▒░░░▒▒▒▒░▒▓▒▒▓▓▒▒▒▓█▓▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█
+█▓▓█▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░▒▒▓▓▓▓░▒▓▓▓▒▒░░░░▒▒▒▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▓▓██▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█▓▓▓▓▓▓▓▓▓▓█
+██▓▓█████▓█▓▓▓█▓████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░▒▒▓▓▓▒░▓████▓▒▒▒▒▒█▓█████▓▓▓▓▓▒▒▒▒▒░▒▓█████▓▓▓▓▓▓█▓▓▓▓▓▓▓▓█▓▓█▓▓▓█▓████
+████▓█▓▓▓█▓▓█▓▓▓█▓▓▓▓▓▓▓████████████▓▒▒▓██████▓▓█████▓▒█▓███▓▓▓▓▓▓▓▓▒▓▓▒▒▒░▒▓███████████▓▓▓▓▓███████▓▓▓▓▓▓█████
+██████▓█▓▓▓█████████████▓▓▓██████████████████▓▓▒██████▓▒▒▓▓███▓▓▓▓▓▓▓▓▓▓▒▒░▒▓█████████████████████▓████████▓███
+█████▓█▓████████████████████████████████████████▓▒██▓▒░▒▒▒▒▓███▓▓▓▓██▓▓▓▓▒░░▓█████████████████████▓▓▓▓▓▓▓██████
+█████████████▓████▓███████████▓█████████████████▓▓▓▒░░░▒▒▒▒▒█████████▓▓█▓▒░▒▒██████████████████████████████████
+███████████████▓█████▓██████████████▓██████████████▓░░░░▒▒▒▒▒▒███████▓▓▒▒░░░▒██████████████████████████████████
+█████████████▓█████████▓▓██▓█▓█████▓███▓████████████▓▒░░░▒░▒▒▒▒▒▒█████▒▒░░░░▓██████████████████████████████████
+███▓███▓██▓▓██▓████████████▓████████▓██▓███████████▓███▒▒▒░▒░▒▒▒▒▒▓██▒▒▓▒▒░▒▒████████████▓▓████████▓▓██████████
+████▓▓███▓██████████▓█▓██▓██▓▓███▓███▓█████▓██████████████▓▓▒░▒▒▒░░░░░░▓▓▓█▓▒▒███████████████▓▓█████████▓██████
+▓█████████▓███████▓███▓▓█████▓█▓█▓██▓███▓▓▓▓███▓█▓█▓██████▓▓██▒▒▒░░░▒█▒▒████▒▒████████▓████▓██████▓▓███████████
+█████▓██████████▓████▓▓█▓███▓▓███▓▓▓█▓▓██▓█▓███▓██▓████▓▓███████▒▒▒▒▓███████▓▓███▓████▓███████▓▓███▓██▓▓███████
+███████████▓███████▓████▓███▓█████████████████▓▓█████████▓▓█████████████████████▓█▓███████████▓██████▓█████████
+█████████████████████████████████████▓█▓███▓█▓██▓█▓█████▓██████▓█▓███████████████████████████████████▓██▓██████
+██████████████████████████████████████▓█████▓▓██▓▓██████████████████▓▓▓▓██▓█████████████▓▓█▓███████████████████
+██████████████████████████████████████████████▓████▓▓█████▓▓███▓▓▓▓██▓██▓█▓█████████████▓███▓██████████████████
+███████████████████████████████████████▓████████████████████▓███████▓▓█▓█▓▓████▓███████████████████████████████
+███████████████████████████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████▓████████▓▓██████████████████████████████████████""")
+
+            print("\n \n La dirección te lleva a un parque, hay gente aún paseando, algunos pájaros, pero según lo que estaba apuntado en las notas tienes que ir hasta la fuente central. Esperas un rato al lado mirándola de arriba abajo, pero no hay nada destacable. \n \n Hasta que un perro camina a tu lado, se sienta y te mira en silencio. \n Pulsa enter para seguir: ")
+
+            if (has_met_dog == True):
+                input()
+                print("'Nos vemos otra vez, supongo que no estás teniendo tantas suerte como querías, pero bueno. Vuelve a preguntarme algunas cosas si quieres a ver si puedo resolverte alguna duda y si no pues al menos otro sitio menos que comprobar ¿No?'")
+            else:
+                input()
+                print("'Así que también te has escapado, bueno, suerte con eso' Murmura el perro, suena extraño como si sus cuerdas vocales no estuvieran pensadas para formar frases, como si aullara en voz baja encajando los sonidos de las palabras sin entenderlas 'Espero que tengas más suerte que yo'")
+
+            os.system("cls")
+
+            lila_tracker += 1
+
+            print("Esto es inusual, pero parece saber algunas cosas: \n \n A. Preguntarle por la chica \n B. Preguntarle por tu pérdida de memoria \n C. Preguntarle por los sucesos extraños \n D. Irse")
+
+            while True:
+                    answer = input("Elijo... ").upper()
+                    if answer == "A" or "B" or "C" or "D":
+                        match answer:
+                            case "A":
+                                print("\n \n '¿La chica? Bueno, puedo decirte algunas cosas, pero es una mala idea, cuanto más sepas más fácil será que te encuentre. Saber cosas sobre ella solo la hace más fuerte' Se para un momento como rumiando la respuesta 'Tampoco debería decir más, es peligroso para los dos, el mero hecho de estar trayendo todo esto de vuelta a mi cabeza me expone; reducirme a esto fue mi última opción y no quiero arriesgarme.'")
+                                input()
+                            case "B":
+                                print("\n \n 'Bueno, es por lo que estás aquí, lo más probable es que haya sido fruto de un plan maestro con unas cuantas décadas de pequeños cálculos y ajustes. Hacer cosas mientras te vigila es muy difícil. Lo importante es que lo que hayas hecho te la ha sacado de la cabeza el tiempo suficiente como para ser libre, lo mejor que puedes hacer es rendirte, intentar olvidarlo todo y, no se, viajar a una isla tropical.'")
+                                input()
+                            case "C":
+                                print("\n \n 'Pues podrían ser muchas cosas, tampoco estoy muy seguro, creo que en parte es el hecho de haberla conocido, te vuelve inestable a nivel existencial y tu presencia desestabiliza las cosas por proximidad. También, ahora que estás abierto a lo sobrenatural, es más fácil que encuentres o te veas atraído por entidades y seres sobrenaturales, ocultismo, algún alienígena. Pero en su mayor parte no tiene nada que ver con ella, es solo mala suerte.'")
+                                input()
+                            case "D":
+                                print("\n \n He encontrado todo lo que necesito aquí dentro.")
+                                break
+
+            print("Todo apunta a que quien estaba aquí estaba sufriendo algo parecido a lo que me está pasando a mi, la estásis de su piso es mala señal, pero si sigue vivo quizás yo también puedo conseguirlo.")
+            
+            special_location_update()
+
+            input()
+
+    on_player_movement()
+
+has_met_lila = False
+
+def on_lila_encounter():
+    global has_met_lila
+    global lila_tracker
+
+    if (has_met_lila == False):
+        has_met_lila = True
+        
+        print("\n \n El aire es frío, el suelo extraño, como si los pies se hundiesen, no recuerdas cuándo has salido del coche a estirar las piernas. La ciudad a tu alrededor no es la misma que antes, no se parece en nada.")
+        input()
+        os.system("cls")
+        print(f"'Te veo, {name_player}, te veo claramente, por fin' La voz viene de ninguna parte, o quizás de dentro de tu cuerpo 'Te he estado buscando, pero al final has venido a mi solito. Tanto intentar unir los hilos ha hecho que pueda volver a verte con claridad'")
+
+        print("\n \n A. Preguntarle si es la chica \n B. Preguntarle cómo puede verte ahora \n C. Preguntarle por sus intenciones \n D. Intentar huir")
+
+        while True:
+                answer = input("Elijo... ").upper()
+                if answer == "A" or "B" or "C" or "D":
+                    match answer:
+                        case "A":
+                            print("\n \n 'Puede ser, es como me decís todos, no es verdad, pero supongo que es la forma que tomo para vosotros.'")
+                            input()
+                        case "B":
+                            print("\n \n 'Cuanto más te acerques a la verdad más fácil será que te encuentre, así que resuelve el caso o intenta escaparte, voy a dar contigo de las dos formas.'")
+                            input()
+                        case "C":
+                            print("\n \n 'Solo quiero recuperar lo que es mio, te he tenido durante casi un siglo y no voy a renunciar ahora, incluso si no puedes recordarlo.'")
+                            input()
+                        case "D":
+                            print("\n \n 'No, no puedes huir de mi, pero puedo dejarte ir de momento, quiero ver lo que haces.'")
+                            break
+        
+        input()
+    else:
+        if (has_met_lila == False):
+        
+            print("\n \n 'Ya has investigado suficiente, atravesarte el cerebro con un picahielos no ha sido suficiente, con el tiempo tu cerebro ha vuelto a ser exactamente cómo necesito. Vuelvo a estar en tu cabeza del todo, por fin podemos volver a casa.'")
+            input()
+            os.system("cls")
+
+            print("\n \n A. Preguntarle qué es la chica \n B. Preguntarle cómo puede alterar la realidad \n C. Preguntarle por sus intenciones \n D. Intentar huir")
+
+            while True:
+                    answer = input("Elijo... ").upper()
+                    if answer == "A" or "B" or "C" or "D":
+                        match answer:
+                            case "A":
+                                print("\n \n 'Solo soy un pensamiento intrusivo, soy tan real como tu, solo que menos física; existo en todos los que me conocen y me alimento de vosotros, de vuestra atención.'")
+                                input()
+                            case "B":
+                                print("\n \n 'Es fácil, pero no podría explicarlo con claridad, sencillamente estamos en planos distintos y para mi crear fenómenos es como para ti es dibujar líneas en papel.'")
+                                input()
+                            case "C":
+                                print("\n \n 'Voy a llevarte de vuelta a casa donde me aseguraré de que no vuelvas a jugármela, no dejaré nada más que lo imprescindible. El cerebro, los ojos y quizás algún órgano en suspensión.'")
+                                input()
+                            case "D":
+                                print("\n \n 'Por favor, como si pudieras.'")
+                                on_game_lose()
+        
+        input()
+
+while True:
+
+    if ((lila_tracker >= 5) & (has_met_lila == False)) or ((lila_tracker >= 10) & (has_met_lila == True)):
+        on_lila_encounter()
+
+    if coordinates_player in locations:
+        print("Reached location")
+        on_special_location()
+
+    match (random.randint(0, 1)):
+        case 0:
+            os.system("cls")
+            print("No hay nada fuera de lo normal")
+            input("Presiona enter para continuar")
+            on_player_movement()
+        case 1:
+            os.system("cls")
+            print("Hay algo en la carretera")
+            on_player_choise()
